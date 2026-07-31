@@ -1,0 +1,35 @@
+# Bu dosyayi `shopify app config link` komutu da otomatik olusturabilir.
+name = "Satış Kiti"
+handle = "satis-kiti"
+client_id = "BURAYA_CLIENT_ID"
+application_url = "https://satiskiti-production.up.railway.app"
+embedded = true
+
+# Gizlilik politikasi ve kullanim kosullari App Store listing formunda ayrica
+# Partner panelinden de girilir (bkz. APP_STORE_KURULUM.md Adim 6). Linklerin
+# gercekten calismasi icin uygulama bu iki sayfayi kendi sunar:
+#   https://satiskiti-production.up.railway.app/gizlilik-politikasi
+#   https://satiskiti-production.up.railway.app/kullanim-kosullari
+
+[access_scopes]
+scopes = "read_products"
+
+[auth]
+redirect_urls = [
+  "https://satiskiti-production.up.railway.app/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2025-10"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/api/webhooks"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+  uri = "/api/webhooks"
+
+[build]
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true

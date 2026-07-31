@@ -1,0 +1,22 @@
+{
+  "name": "satiskiti",
+  "version": "1.0.0",
+  "description": "Satis Kiti - Turk e-ticaret magazalari icin taksit tablosu, kargo bari ve guven rozetleri",
+  "type": "module",
+  "engines": { "node": ">=20.0.0" },
+  "scripts": {
+    "dev": "shopify app dev",
+    "build": "npm --prefix web install && npm --prefix web run build",
+    "deploy": "shopify app deploy",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@shopify/shopify-api": "^11.6.0",
+    "@shopify/shopify-app-express": "^5.0.9",
+    "@shopify/shopify-app-session-storage-memory": "^4.0.9",
+    "compression": "^1.7.4",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "serve-static": "^1.16.2"
+  }
+}

@@ -1,0 +1,92 @@
+{%- comment -%}
+  Kargo kesim saati sayacı + gerçek stok bilgisi.
+  Sahte "şu an X kişi bakıyor" sayacı bilerek konmadı: uydurma veridir,
+  tüketiciyi yanıltır ve Shopify incelemesinde ret sebebidir.
+{%- endcomment -%}
+
+{%- liquid
+  assign lisans = app.metafields.satiskiti.aktif
+  assign kapali = false
+  if lisans != blank and lisans == '0'
+    assign kapali = true
+  endif
+  assign secili = product.selected_or_first_available_variant
+-%}
+
+{%- unless kapali -%}
+{%- if product != blank -%}
+<div
+  class="sk-aciliyet"
+  data-sk-aciliyet
+  data-kesim-saati="{{ block.settings.kesim_saati }}"
+  data-mesaj="{{ block.settings.kargo_mesaji | escape }}"
+  data-son-mesaj="{{ block.settings.gecti_mesaji | escape }}"
+  style="--sk-vurgu: {{ block.settings.vurgu_rengi }};"
+  {{ block.shopify_attributes }}
+>
+  {%- if block.settings.kargo_sayaci -%}
+    <p class="sk-aciliyet__kargo" data-sk-aciliyet-mesaj>{{ block.settings.kargo_mesaji }}</p>
+  {%- endif -%}
+
+  {%- if block.settings.stok_goster -%}
+    {%- if secili.inventory_management != blank and secili.inventory_policy == 'deny' -%}
+      {%- assign stok = secili.inventory_quantity -%}
+      {%- if stok > 0 and stok <= block.settings.stok_esigi -%}
+        <p class="sk-aciliyet__stok">
+          {{ block.settings.stok_mesaji | replace: '[adet]', stok }}
+        </p>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endif -%}
+</div>
+{%- endif -%}
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Kargo saati ve stok",
+  "target": "section",
+  "stylesheet": "satiskiti.css",
+  "javascript": "satiskiti.js",
+  "settings": [
+    { "type": "header", "content": "Kargo kesim saati" },
+    { "type": "checkbox", "id": "kargo_sayaci", "label": "Kargo sayacını göster", "default": true },
+    {
+      "type": "text",
+      "id": "kesim_saati",
+      "label": "Kargo kesim saati",
+      "default": "16:00",
+      "info": "24 saat biçiminde. Bu saatten önce verilen siparişler aynı gün kargolanıyorsa."
+    },
+    {
+      "type": "text",
+      "id": "kargo_mesaji",
+      "label": "Kesim saatinden önce",
+      "default": "Bugün kargoda: [sure] içinde sipariş ver",
+      "info": "[sure] yerine kalan süre yazılır."
+    },
+    {
+      "type": "text",
+      "id": "gecti_mesaji",
+      "label": "Kesim saatinden sonra",
+      "default": "Yarın kargolanır"
+    },
+    { "type": "header", "content": "Stok uyarısı" },
+    { "type": "checkbox", "id": "stok_goster", "label": "Az kalan stoğu göster", "default": true },
+    {
+      "type": "number",
+      "id": "stok_esigi",
+      "label": "Bu adedin altındaysa uyar",
+      "default": 10
+    },
+    {
+      "type": "text",
+      "id": "stok_mesaji",
+      "label": "Stok mesajı",
+      "default": "Son [adet] adet!",
+      "info": "[adet] yerine gerçek stok sayısı yazılır. Stok takibi kapalı ürünlerde hiç gösterilmez."
+    },
+    { "type": "color", "id": "vurgu_rengi", "label": "Vurgu rengi", "default": "#c0392b" }
+  ]
+}
+{% endschema %}

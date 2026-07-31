@@ -1,0 +1,78 @@
+{%- comment -%}
+  Güven rozetleri. Tamamen statik — mağazanın gerçekten sunduğu hizmetleri yazmalısın.
+{%- endcomment -%}
+
+{%- liquid
+  assign lisans = app.metafields.satiskiti.aktif
+  assign kapali = false
+  if lisans != blank and lisans == '0'
+    assign kapali = true
+  endif
+-%}
+
+{%- unless kapali -%}
+<div class="sk-rozetler" style="--sk-vurgu: {{ block.settings.ikon_rengi }};" {{ block.shopify_attributes }}>
+  {%- if block.settings.rozet_1 != blank -%}
+    <div class="sk-rozet">
+      <span class="sk-rozet__ikon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/>
+        </svg>
+      </span>
+      <span class="sk-rozet__metin">{{ block.settings.rozet_1 }}</span>
+    </div>
+  {%- endif -%}
+
+  {%- if block.settings.rozet_2 != blank -%}
+    <div class="sk-rozet">
+      <span class="sk-rozet__ikon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M1 7h13v9H1z"/><path d="M14 10h4l3 3v3h-7z"/><circle cx="5.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/>
+        </svg>
+      </span>
+      <span class="sk-rozet__metin">{{ block.settings.rozet_2 }}</span>
+    </div>
+  {%- endif -%}
+
+  {%- if block.settings.rozet_3 != blank -%}
+    <div class="sk-rozet">
+      <span class="sk-rozet__ikon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>
+        </svg>
+      </span>
+      <span class="sk-rozet__metin">{{ block.settings.rozet_3 }}</span>
+    </div>
+  {%- endif -%}
+
+  {%- if block.settings.rozet_4 != blank -%}
+    <div class="sk-rozet">
+      <span class="sk-rozet__ikon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7">
+          <rect x="3" y="10" width="18" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+      </span>
+      <span class="sk-rozet__metin">{{ block.settings.rozet_4 }}</span>
+    </div>
+  {%- endif -%}
+</div>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Güven rozetleri",
+  "target": "section",
+  "stylesheet": "satiskiti.css",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Sadece gerçekten sunduğun hizmetleri yaz. Sunmadığın bir sözü buraya yazmak tüketici mevzuatına aykırıdır."
+    },
+    { "type": "text", "id": "rozet_1", "label": "1. rozet", "default": "Güvenli ödeme" },
+    { "type": "text", "id": "rozet_2", "label": "2. rozet", "default": "Aynı gün kargo" },
+    { "type": "text", "id": "rozet_3", "label": "3. rozet", "default": "14 gün içinde iade" },
+    { "type": "text", "id": "rozet_4", "label": "4. rozet", "default": "Kapıda ödeme" },
+    { "type": "color", "id": "ikon_rengi", "label": "İkon rengi", "default": "#1a7f5a" }
+  ]
+}
+{% endschema %}

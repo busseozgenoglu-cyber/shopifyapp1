@@ -1,0 +1,82 @@
+{%- comment -%}
+  Ücretsiz kargo ilerleme çubuğu. Sepet tutarını Shopify'ın kendi cart nesnesinden okur.
+  Sepet güncellendiğinde /cart.js ile yenilenir — dış servis yok.
+{%- endcomment -%}
+
+{%- liquid
+  assign lisans = app.metafields.satiskiti.aktif
+  assign kapali = false
+  if lisans != blank and lisans == '0'
+    assign kapali = true
+  endif
+
+  assign esik = block.settings.esik
+  assign toplam = cart.total_price
+  assign kalan = esik | minus: toplam
+  assign yuzde = 0
+  if esik > 0
+    assign yuzde = toplam | times: 100 | divided_by: esik
+  endif
+  if yuzde > 100
+    assign yuzde = 100
+  endif
+  assign kalan_para = kalan | money
+-%}
+
+{%- unless kapali -%}
+<div
+  class="sk-kargo"
+  data-sk-kargo
+  data-esik="{{ esik }}"
+  data-para-formati="{{ shop.money_format | escape }}"
+  data-mesaj-devam="{{ block.settings.mesaj_devam | escape }}"
+  data-mesaj-tamam="{{ block.settings.mesaj_tamam | escape }}"
+  style="--sk-vurgu: {{ block.settings.bar_rengi }}; --sk-bar-zemin: {{ block.settings.zemin_rengi }};"
+  {{ block.shopify_attributes }}
+>
+  <p class="sk-kargo__mesaj" data-sk-kargo-mesaj>
+    {%- if kalan > 0 -%}
+      {{ block.settings.mesaj_devam | replace: '[tutar]', kalan_para }}
+    {%- else -%}
+      {{ block.settings.mesaj_tamam }}
+    {%- endif -%}
+  </p>
+
+  <div class="sk-kargo__ray" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ yuzde }}" data-sk-kargo-ray>
+    <div class="sk-kargo__dolgu" data-sk-kargo-dolgu style="width: {{ yuzde }}%"></div>
+  </div>
+</div>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Ücretsiz kargo çubuğu",
+  "target": "section",
+  "stylesheet": "satiskiti.css",
+  "javascript": "satiskiti.js",
+  "settings": [
+    {
+      "type": "number",
+      "id": "esik",
+      "label": "Ücretsiz kargo alt sınırı (kuruş)",
+      "default": 75000,
+      "info": "75000 = 750 ₺. Mağaza kargo ayarındaki tutarla aynı olmalı."
+    },
+    {
+      "type": "text",
+      "id": "mesaj_devam",
+      "label": "Sınıra ulaşılmadığında",
+      "default": "Ücretsiz kargoya [tutar] kaldı!",
+      "info": "[tutar] yerine kalan tutar yazılır."
+    },
+    {
+      "type": "text",
+      "id": "mesaj_tamam",
+      "label": "Sınır aşıldığında",
+      "default": "Tebrikler, kargo bedava! 🎉"
+    },
+    { "type": "color", "id": "bar_rengi", "label": "Çubuk rengi", "default": "#1a7f5a" },
+    { "type": "color", "id": "zemin_rengi", "label": "Çubuk zemini", "default": "#eeeeee" }
+  ]
+}
+{% endschema %}
