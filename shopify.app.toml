@@ -1,8 +1,8 @@
 # Bu dosyayi `shopify app config link` komutu da otomatik olusturabilir.
 name = "Satış Kiti"
 handle = "satis-kiti"
-client_id = "BURAYA_CLIENT_ID"
-application_url = "https://satiskiti-production.up.railway.app"
+client_id = "273f7ed2240241dab0ebf935ff2d77c0"
+application_url = "https://shopifyapp1-production.up.railway.app"
 embedded = true
 
 # Gizlilik politikasi ve kullanim kosullari App Store listing formunda ayrica
@@ -16,7 +16,7 @@ scopes = "read_products"
 
 [auth]
 redirect_urls = [
-  "https://satiskiti-production.up.railway.app/api/auth/callback"
+  "https://shopifyapp1-production.up.railway.app/api/auth/callback"
 ]
 
 [webhooks]
