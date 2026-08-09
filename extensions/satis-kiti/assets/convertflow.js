@@ -238,3 +238,67 @@
   document.addEventListener("shopify:section:load", baslat);
   document.addEventListener("shopify:block:select", baslat);
 })();
+
+
+/* ============================================================
+   INDIRIM SAYACI MOTORU
+   ============================================================ */
+
+(function () {
+  function baslatIndirimSayaclari() {
+    const sayaclar = document.querySelectorAll('[data-cf-indirim]');
+
+    sayaclar.forEach(function (sayac) {
+      const bitisStr = sayac.dataset.bitis;
+      if (!bitisStr) return;
+
+      const bitis = new Date(bitisStr);
+      const mesajAktif = sayac.dataset.mesajAktif || '';
+      const mesajBitti = sayac.dataset.mesajBitti || '';
+
+      const elGun = sayac.querySelector('[data-cf-gun]');
+      const elSaat = sayac.querySelector('[data-cf-saat]');
+      const elDakika = sayac.querySelector('[data-cf-dakika]');
+      const elSaniye = sayac.querySelector('[data-cf-saniye]');
+      const elMesaj = sayac.querySelector('[data-cf-indirim-mesaj]');
+
+      if (!elGun || !elSaat || !elDakika || !elSaniye) return;
+
+      function guncelle() {
+        const simdi = new Date();
+        const kalan = bitis - simdi;
+
+        if (kalan <= 0) {
+          elGun.textContent = '00';
+          elSaat.textContent = '00';
+          elDakika.textContent = '00';
+          elSaniye.textContent = '00';
+          if (elMesaj && mesajBitti) elMesaj.textContent = mesajBitti;
+          sayac.style.opacity = '0.6';
+          return;
+        }
+
+        const gun = Math.floor(kalan / (1000 * 60 * 60 * 24));
+        const saat = Math.floor((kalan % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const dakika = Math.floor((kalan % (1000 * 60 * 60)) / (1000 * 60));
+        const saniye = Math.floor((kalan % (1000 * 60)) / 1000);
+
+        elGun.textContent = String(gun).padStart(2, '0');
+        elSaat.textContent = String(saat).padStart(2, '0');
+        elDakika.textContent = String(dakika).padStart(2, '0');
+        elSaniye.textContent = String(saniye).padStart(2, '0');
+
+        if (elMesaj && mesajAktif) elMesaj.textContent = mesajAktif;
+      }
+
+      guncelle();
+      setInterval(guncelle, 1000);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', baslatIndirimSayaclari);
+  } else {
+    baslatIndirimSayaclari();
+  }
+})();
