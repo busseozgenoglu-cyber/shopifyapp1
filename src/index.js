@@ -45,15 +45,6 @@ app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
   shopify.config.auth.callbackPath,
   shopify.auth.callback(),
-  async (_req, res, next) => {
-    try {
-      await shopify.api.webhooks.register({ session: res.locals.shopify.session });
-      console.log(`[ConvertFlow TR] Webhook kaydedildi: ${res.locals.shopify.session.shop}`);
-    } catch (err) {
-      console.error(`[ConvertFlow TR] Webhook kaydi hatasi: ${err.message}`);
-    }
-    next();
-  },
   shopify.redirectToShopifyOrAppRoot()
 );
 
