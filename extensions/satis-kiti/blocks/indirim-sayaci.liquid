@@ -1,5 +1,5 @@
 {%- comment -%}
-  Indirim sayaci + stok aciliyet bloku.
+  ConvertFlow TR — Indirim Sayaci + Stok Aciliyet Bloku
   Gercek bir bitis tarihine geri sayim yapar. Sahte veri kullanilmaz.
   Shopify App Store incelemesinde sahte sayac ret sebebidir.
 {%- endcomment -%}
@@ -90,7 +90,7 @@
 
 {% schema %}
 {
-  "name": "İndirim sayacı",
+  "name": "İndirim Sayacı",
   "target": "section",
   "stylesheet": "convertflow.css",
   "javascript": "convertflow.js",
@@ -112,13 +112,13 @@
       "type": "text",
       "id": "mesaj_aktif",
       "label": "Aktif sayaç mesajı",
-      "default": "Bu fırsat kaçmaz! İndirim bitmeden sipariş ver."
+      "default": "🔥 Bu fırsat kaçmaz! İndirim bitmeden sipariş ver."
     },
     {
       "type": "text",
       "id": "mesaj_bitti",
       "label": "Sayaç bitti mesajı",
-      "default": "İndirim süresi doldu. Yeni fırsatları kaçırma!"
+      "default": "⏰ İndirim süresi doldu. Yeni fırsatları kaçırma!"
     },
     {
       "type": "checkbox",
@@ -137,7 +137,7 @@
       "type": "text",
       "id": "stok_mesaji",
       "label": "Stok mesajı",
-      "default": "Stokta sadece [adet] adet kaldı!",
+      "default": "⚡ Stokta sadece [adet] adet kaldı!",
       "info": "[adet] yerine gerçek stok adedi yazılır."
     },
     {
