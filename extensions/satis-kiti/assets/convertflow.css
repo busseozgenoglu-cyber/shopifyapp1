@@ -154,3 +154,176 @@
 @media (prefers-reduced-motion: reduce) {
   .sk-kargo__dolgu { transition: none; }
 }
+
+
+/* ============================================================
+   INDIRIM SAYACI
+   ============================================================ */
+
+.cf-indirim {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, var(--cf-zemin, #fef2f2) 0%, #fff7ed 100%);
+  border: 2px solid #fecaca;
+  border-radius: 16px;
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.cf-indirim::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(220,38,38,0.04) 0%, transparent 70%);
+  animation: cf-pulse-glow 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes cf-pulse-glow {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.cf-indirim__baslik {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.cf-indirim__badge {
+  background: var(--cf-vurgu, #dc2626);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: cf-badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes cf-badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
+}
+
+.cf-indirim__yuzde {
+  background: #f97316;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.cf-indirim__mesaj {
+  font-size: 13px;
+  color: #7c2d12;
+  margin-bottom: 14px;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+.cf-indirim__sayac {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.cf-indirim__kutu {
+  background: white;
+  border: 1.5px solid #fca5a5;
+  border-radius: 10px;
+  padding: 8px 10px;
+  min-width: 48px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(220,38,38,0.06);
+}
+
+.cf-indirim__deger {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--cf-vurgu, #dc2626);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: block;
+}
+
+.cf-indirim__etiket {
+  font-size: 9px;
+  color: #9a3412;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 3px;
+  display: block;
+  font-weight: 600;
+}
+
+.cf-indirim__ayrac {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cf-vurgu, #dc2626);
+  align-self: center;
+  margin-top: -6px;
+}
+
+.cf-indirim__stok {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid #fed7aa;
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
+}
+
+.cf-indirim__stok-nokta {
+  width: 8px;
+  height: 8px;
+  background: var(--cf-vurgu, #dc2626);
+  border-radius: 50%;
+  animation: cf-dot-blink 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes cf-dot-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+.cf-indirim__stok-metin {
+  font-size: 12px;
+  color: #7c2d12;
+  font-weight: 600;
+}
+
+.cf-indirim__progress {
+  margin-top: 8px;
+  height: 5px;
+  background: #fee2e2;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.cf-indirim__progress-dolgu {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cf-vurgu, #dc2626), #f97316);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
