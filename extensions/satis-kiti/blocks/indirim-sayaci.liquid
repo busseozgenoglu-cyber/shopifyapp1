@@ -1,0 +1,157 @@
+{%- comment -%}
+  Indirim sayaci + stok aciliyet bloku.
+  Gercek bir bitis tarihine geri sayim yapar. Sahte veri kullanilmaz.
+  Shopify App Store incelemesinde sahte sayac ret sebebidir.
+{%- endcomment -%}
+
+{%- liquid
+  assign lisans = app.metafields.convertflow.aktif
+  assign kapali = false
+  if lisans != blank and lisans == '0'
+    assign kapali = true
+  endif
+-%}
+
+{%- unless kapali -%}
+{%- if product != blank -%}
+  {%- assign secili = product.selected_or_first_available_variant -%}
+  {%- assign fiyat = secili.price -%}
+  {%- assign indirimli_fiyat = secili.compare_at_price -%}
+
+  {%- if indirimli_fiyat > fiyat -%}
+    {%- assign indirim_yuzde = fiyat | times: 100 | divided_by: indirimli_fiyat -%}
+    {%- assign indirim_yuzde = 100 | minus: indirim_yuzde -%}
+  {%- else -%}
+    {%- assign indirim_yuzde = 0 -%}
+  {%- endif -%}
+
+  <div
+    class="cf-indirim"
+    data-cf-indirim
+    data-bitis="{{ block.settings.bitis_tarihi }}"
+    data-mesaj-aktif="{{ block.settings.mesaj_aktif | escape }}"
+    data-mesaj-bitti="{{ block.settings.mesaj_bitti | escape }}"
+    data-stok-esik="{{ block.settings.stok_esigi }}"
+    data-stok-mesaj="{{ block.settings.stok_mesaji | escape }}"
+    data-indirim-yuzde="{{ indirim_yuzde }}"
+    style="--cf-vurgu: {{ block.settings.vurgu_rengi }}; --cf-zemin: {{ block.settings.zemin_rengi }};"
+    {{ block.shopify_attributes }}
+  >
+    <div class="cf-indirim__baslik">
+      <span class="cf-indirim__badge">⚡ {{ block.settings.baslik }}</span>
+      {%- if indirim_yuzde > 0 -%}
+        <span class="cf-indirim__yuzde">-%{{ indirim_yuzde }}</span>
+      {%- endif -%}
+    </div>
+
+    <p class="cf-indirim__mesaj" data-cf-indirim-mesaj>{{ block.settings.mesaj_aktif }}</p>
+
+    <div class="cf-indirim__sayac" data-cf-indirim-sayac>
+      <div class="cf-indirim__kutu">
+        <span class="cf-indirim__deger" data-cf-gun>00</span>
+        <span class="cf-indirim__etiket">Gün</span>
+      </div>
+      <span class="cf-indirim__ayrac">:</span>
+      <div class="cf-indirim__kutu">
+        <span class="cf-indirim__deger" data-cf-saat>00</span>
+        <span class="cf-indirim__etiket">Saat</span>
+      </div>
+      <span class="cf-indirim__ayrac">:</span>
+      <div class="cf-indirim__kutu">
+        <span class="cf-indirim__deger" data-cf-dakika>00</span>
+        <span class="cf-indirim__etiket">Dakika</span>
+      </div>
+      <span class="cf-indirim__ayrac">:</span>
+      <div class="cf-indirim__kutu">
+        <span class="cf-indirim__deger" data-cf-saniye>00</span>
+        <span class="cf-indirim__etiket">Saniye</span>
+      </div>
+    </div>
+
+    {%- if block.settings.stok_goster -%}
+      {%- if secili.inventory_management != blank and secili.inventory_policy == 'deny' -%}
+        {%- assign stok = secili.inventory_quantity -%}
+        {%- if stok > 0 and stok <= block.settings.stok_esigi -%}
+          <div class="cf-indirim__stok">
+            <span class="cf-indirim__stok-nokta"></span>
+            <span class="cf-indirim__stok-metin">
+              {{ block.settings.stok_mesaji | replace: '[adet]', stok }}
+            </span>
+          </div>
+          <div class="cf-indirim__progress">
+            <div class="cf-indirim__progress-dolgu" style="width: {{ stok | times: 100 | divided_by: block.settings.stok_esigi }}%"></div>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+{%- endif -%}
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "İndirim sayacı",
+  "target": "section",
+  "stylesheet": "convertflow.css",
+  "javascript": "convertflow.js",
+  "settings": [
+    {
+      "type": "text",
+      "id": "baslik",
+      "label": "Başlık",
+      "default": "İNDİRİM"
+    },
+    {
+      "type": "text",
+      "id": "bitis_tarihi",
+      "label": "İndirim bitiş tarihi",
+      "default": "2026-08-15T23:59:59",
+      "info": "ISO 8601 formatında. Örnek: 2026-08-15T23:59:59"
+    },
+    {
+      "type": "text",
+      "id": "mesaj_aktif",
+      "label": "Aktif sayaç mesajı",
+      "default": "Bu fırsat kaçmaz! İndirim bitmeden sipariş ver."
+    },
+    {
+      "type": "text",
+      "id": "mesaj_bitti",
+      "label": "Sayaç bitti mesajı",
+      "default": "İndirim süresi doldu. Yeni fırsatları kaçırma!"
+    },
+    {
+      "type": "checkbox",
+      "id": "stok_goster",
+      "label": "Stok uyarısı göster",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "stok_esigi",
+      "label": "Stok eşik değeri",
+      "default": 10,
+      "info": "Bu değerin altındaki stoklarda uyarı gösterilir."
+    },
+    {
+      "type": "text",
+      "id": "stok_mesaji",
+      "label": "Stok mesajı",
+      "default": "Stokta sadece [adet] adet kaldı!",
+      "info": "[adet] yerine gerçek stok adedi yazılır."
+    },
+    {
+      "type": "color",
+      "id": "vurgu_rengi",
+      "label": "Vurgu rengi",
+      "default": "#dc2626"
+    },
+    {
+      "type": "color",
+      "id": "zemin_rengi",
+      "label": "Zemin rengi",
+      "default": "#fef2f2"
+    }
+  ]
+}
+{% endschema %}
