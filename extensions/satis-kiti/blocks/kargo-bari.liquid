@@ -4,7 +4,7 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign lisans = app.metafields.satiskiti.aktif
+  assign lisans = app.metafields.convertflow.aktif
   assign kapali = false
   if lisans != blank and lisans == '0'
     assign kapali = true
@@ -52,8 +52,8 @@
 {
   "name": "Ücretsiz kargo çubuğu",
   "target": "section",
-  "stylesheet": "satiskiti.css",
-  "javascript": "satiskiti.js",
+  "stylesheet": "convertflow.css",
+  "javascript": "convertflow.js",
   "settings": [
     {
       "type": "number",
