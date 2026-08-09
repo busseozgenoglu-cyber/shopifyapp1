@@ -11,10 +11,11 @@ export const PLAN_DETAILS = [
     name: PLANS.BASLANGIC,
     price: 9.99,
     features: [
-      "Taksit tablosu",
-      "Ücretsiz kargo çubuğu",
-      "Güven rozetleri",
-      "Sınırsız ürün",
+      "Taksit tablosu (varyant uyumlu)",
+      "Ücretsiz kargo ilerleme çubuğu",
+      "Güven rozetleri (kapıda ödeme, iade, güvenli ödeme)",
+      "Sınırsız ürün ve sayfa",
+      "E-posta desteği",
     ],
   },
   {
@@ -24,8 +25,9 @@ export const PLAN_DETAILS = [
     features: [
       "Başlangıç paketindeki her şey",
       "Kargo kesim saati sayacı",
-      "Stok uyarısı",
-      "Öncelikli destek",
+      "Stok uyarısı ve aciliyet mesajı",
+      "Öncelikli destek (24 saat içinde yanıt)",
+      "Gelişmiş blok özelleştirme",
     ],
   },
 ];
