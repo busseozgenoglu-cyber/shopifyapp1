@@ -26,6 +26,7 @@ export const PLAN_DETAILS = [
       "Başlangıç paketindeki her şey",
       "Kargo kesim saati sayacı",
       "Stok uyarısı ve aciliyet mesajı",
+      "İndirim sayacı (geri sayım + stok aciliyet)",
       "Öncelikli destek (24 saat içinde yanıt)",
       "Gelişmiş blok özelleştirme",
     ],
