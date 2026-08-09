@@ -2,5 +2,5 @@ api_version = "2025-10"
 
 [[extensions]]
 type = "theme"
-name = "Satış Kiti"
-handle = "satis-kiti"
+name = "ConvertFlow TR"
+handle = "convertflow-tr"
