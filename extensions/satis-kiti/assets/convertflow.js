@@ -1,252 +1,205 @@
-/*
- * ConvertFlow TR — mağaza vitrini betiği.
- * Yalnızca Shopify'ın kendi uç noktalarını kullanır (/cart.js, /products/handle.js).
- * Hiçbir dış sunucuya istek gitmez, hiçbir veri toplanmaz.
- */
-(function () {
-  "use strict";
-
-  if (window.__satisKitiYuklendi) return;
-  window.__satisKitiYuklendi = true;
-
-  var kok = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || "/";
-
-  /* ---------- Para biçimlendirme (Shopify money_format uyumlu) ---------- */
-
-  function sayiBicimle(deger, ondalik, binlik, ondalikAyraci) {
-    if (isNaN(deger) || deger === null) deger = 0;
-    var sabit = deger.toFixed(ondalik);
-    var parcalar = sabit.split(".");
-    var tam = parcalar[0].replace(/(\d)(?=(\d{3})+$)/g, "$1" + binlik);
-    var kalan = parcalar[1] ? ondalikAyraci + parcalar[1] : "";
-    return tam + kalan;
-  }
-
-  function paraYaz(kurus, format) {
-    var tutar = (Number(kurus) || 0) / 100;
-    var kaliplar = {
-      amount: function () { return sayiBicimle(tutar, 2, ",", "."); },
-      amount_no_decimals: function () { return sayiBicimle(tutar, 0, ",", ""); },
-      amount_with_comma_separator: function () { return sayiBicimle(tutar, 2, ".", ","); },
-      amount_no_decimals_with_comma_separator: function () { return sayiBicimle(tutar, 0, ".", ""); },
-      amount_with_space_separator: function () { return sayiBicimle(tutar, 2, " ", ","); },
-      amount_no_decimals_with_space_separator: function () { return sayiBicimle(tutar, 0, " ", ""); },
-      amount_with_apostrophe_separator: function () { return sayiBicimle(tutar, 2, "'", "."); }
-    };
-    var sablon = format || "{{amount_with_comma_separator}} TL";
-    return sablon.replace(/\{\{\s*(\w+)\s*\}\}/g, function (_, anahtar) {
-      var fn = kaliplar[anahtar] || kaliplar.amount_with_comma_separator;
-      return fn();
-    });
-  }
-
-  /* ---------- Taksit tablosu ---------- */
-
-  function planCoz(metin) {
-    return String(metin || "")
-      .split(",")
-      .map(function (satir) {
-        var parcalar = satir.split(":");
-        var adet = parseInt(String(parcalar[0]).trim(), 10);
-        var oran = parcalar.length > 1 ? parseFloat(String(parcalar[1]).trim()) : 0;
-        return { adet: adet, oran: isNaN(oran) ? 0 : oran };
-      })
-      .filter(function (s) { return !isNaN(s.adet) && s.adet > 1; });
-  }
-
-  function taksitCiz(kutu, fiyat) {
-    var govde = kutu.querySelector("[data-sk-taksit-govde]");
-    if (!govde) return;
-
-    var altLimit = parseInt(kutu.dataset.altLimit, 10) || 0;
-    var minTaksit = parseInt(kutu.dataset.minTaksit, 10) || 0;
-    var format = kutu.dataset.paraFormati;
-    var vadeEtiketi = kutu.dataset.vadeEtiketi || "";
-    var taksitKelimesi = kutu.dataset.taksitKelimesi || "Taksit";
-
-    if (fiyat < altLimit) {
-      kutu.hidden = true;
-      return;
-    }
-    kutu.hidden = false;
-
-    var satirlar = planCoz(kutu.dataset.plan);
-    var html = "";
-
-    satirlar.forEach(function (s) {
-      var toplam = Math.round(fiyat + (fiyat * s.oran) / 100);
-      var aylik = Math.round(toplam / s.adet);
-      if (aylik < minTaksit) return;
-
-      var rozet = s.oran === 0 && vadeEtiketi
-        ? ' <span class="sk-taksit__rozet">' + vadeEtiketi + "</span>"
-        : "";
-
-      html +=
-        "<tr><td><strong>" + s.adet + "</strong> " + taksitKelimesi + rozet + "</td>" +
-        '<td class="sk-taksit__aylik">' + paraYaz(aylik, format) + "</td>" +
-        '<td class="sk-taksit__toplam">' + paraYaz(toplam, format) + "</td></tr>";
-    });
-
-    govde.innerHTML = html;
-    kutu.hidden = html === "";
-  }
-
-  var urunOnbellek = {};
-
-  function urunGetir(handle) {
-    if (urunOnbellek[handle]) return urunOnbellek[handle];
-    urunOnbellek[handle] = fetch(kok + "products/" + handle + ".js", {
-      headers: { Accept: "application/json" }
-    })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .catch(function () { return null; });
-    return urunOnbellek[handle];
-  }
-
-  function seciliVaryantId() {
-    var url = new URL(window.location.href);
-    var id = url.searchParams.get("variant");
-    if (id) return Number(id);
-    var alan = document.querySelector('form[action*="/cart/add"] [name="id"]');
-    return alan ? Number(alan.value) : null;
-  }
-
-  function taksitleriGuncelle() {
-    document.querySelectorAll("[data-sk-taksit]").forEach(function (kutu) {
-      var handle = kutu.dataset.urun;
-      var varyantId = seciliVaryantId();
-      if (!handle || !varyantId) return;
-
-      urunGetir(handle).then(function (urun) {
-        if (!urun) return;
-        var varyant = urun.variants.find(function (v) { return v.id === varyantId; });
-        if (varyant) taksitCiz(kutu, varyant.price);
-      });
-    });
-  }
-
-  /* ---------- Ücretsiz kargo çubuğu ---------- */
-
-  function kargoBariCiz(toplam) {
-    document.querySelectorAll("[data-sk-kargo]").forEach(function (kutu) {
-      var esik = parseInt(kutu.dataset.esik, 10) || 0;
-      if (esik <= 0) return;
-
-      var format = kutu.dataset.paraFormati;
-      var kalan = Math.max(0, esik - toplam);
-      var yuzde = Math.min(100, Math.round((toplam / esik) * 100));
-
-      var mesajKutusu = kutu.querySelector("[data-sk-kargo-mesaj]");
-      var dolgu = kutu.querySelector("[data-sk-kargo-dolgu]");
-      var ray = kutu.querySelector("[data-sk-kargo-ray]");
-
-      if (mesajKutusu) {
-        mesajKutusu.textContent =
-          kalan > 0
-            ? String(kutu.dataset.mesajDevam || "").replace("[tutar]", paraYaz(kalan, format))
-            : kutu.dataset.mesajTamam || "";
-      }
-      if (dolgu) dolgu.style.width = yuzde + "%";
-      if (ray) ray.setAttribute("aria-valuenow", String(yuzde));
-    });
-  }
-
-  function sepetiYenile() {
-    if (!document.querySelector("[data-sk-kargo]")) return;
-    fetch(kok + "cart.js", { headers: { Accept: "application/json" } })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (sepet) { if (sepet) kargoBariCiz(sepet.total_price); })
-      .catch(function () {});
-  }
-
-  /* Tema sepeti güncellediğinde çubuğu da güncelle */
-  var asilFetch = window.fetch;
-  window.fetch = function () {
-    var istek = asilFetch.apply(this, arguments);
-    try {
-      var adres = String(arguments[0] && arguments[0].url ? arguments[0].url : arguments[0]);
-      if (/\/cart\/(add|change|update|clear)/.test(adres)) {
-        istek.then(function () { setTimeout(sepetiYenile, 120); });
-      }
-    } catch (e) {}
-    return istek;
-  };
-
-  /* ---------- Kargo kesim saati sayacı ---------- */
-
-  function sureMetni(ms) {
-    var toplamDk = Math.floor(ms / 60000);
-    var saat = Math.floor(toplamDk / 60);
-    var dakika = toplamDk % 60;
-    if (saat > 0) return saat + " saat " + dakika + " dakika";
-    return dakika + " dakika";
-  }
-
-  function sayaciGuncelle() {
-    document.querySelectorAll("[data-sk-aciliyet]").forEach(function (kutu) {
-      var mesajKutusu = kutu.querySelector("[data-sk-aciliyet-mesaj]");
-      if (!mesajKutusu) return;
-
-      var parcalar = String(kutu.dataset.kesimSaati || "16:00").split(":");
-      var saat = parseInt(parcalar[0], 10);
-      var dakika = parseInt(parcalar[1], 10) || 0;
-      if (isNaN(saat)) return;
-
-      var simdi = new Date();
-      var kesim = new Date(simdi);
-      kesim.setHours(saat, dakika, 0, 0);
-
-      if (simdi >= kesim) {
-        mesajKutusu.textContent = kutu.dataset.sonMesaj || "";
-        return;
-      }
-      mesajKutusu.textContent = String(kutu.dataset.mesaj || "").replace(
-        "[sure]",
-        sureMetni(kesim - simdi)
-      );
-    });
-  }
-
-  /* ---------- Başlat ---------- */
-
-  function baslat() {
-    taksitleriGuncelle();
-    sepetiYenile();
-    sayaciGuncelle();
-    setInterval(sayaciGuncelle, 60000);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", baslat);
-  } else {
-    baslat();
-  }
-
-  /* Varyant değişimi: tema hangi yöntemi kullanırsa kullansın yakala */
-  document.addEventListener("change", function (olay) {
-    if (olay.target.closest('form[action*="/cart/add"], variant-selects, variant-radios')) {
-      setTimeout(taksitleriGuncelle, 60);
-    }
-  });
-  ["variant:change", "variantChange", "product:variant-change"].forEach(function (ad) {
-    document.addEventListener(ad, function () { setTimeout(taksitleriGuncelle, 60); });
-  });
-  window.addEventListener("popstate", function () { setTimeout(taksitleriGuncelle, 60); });
-
-  /* Tema düzenleyicide blok eklenince yeniden çiz */
-  document.addEventListener("shopify:section:load", baslat);
-  document.addEventListener("shopify:block:select", baslat);
-})();
-
-
 /* ============================================================
-   INDIRIM SAYACI MOTORU
+   CONVERTFLOW TR — Mükemmel Satış Artırıcı Blok Motoru
+   Intersection Observer + Smooth Animasyon + Confetti
    ============================================================ */
 
 (function () {
+  'use strict';
+
+  /* ---------- UTILITIES ---------- */
+  function debounce(fn, ms) {
+    let t;
+    return function () {
+      clearTimeout(t);
+      t = setTimeout(fn, ms);
+    };
+  }
+
+  function formatPara(tutar, format) {
+    if (!format) return tutar.toLocaleString('tr-TR');
+    return format.replace(/\{\{\s*amount\s*\}\}/g, (tutar / 100).toFixed(2).replace('.', ','));
+  }
+
+  /* ---------- INTERSECTION OBSERVER (Animasyon trigger) ---------- */
+  function baslatGozlemci() {
+    if (!window.IntersectionObserver) return;
+    const gozlemci = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('cf-gorunur');
+          gozlemci.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.cf-taksit, .cf-kargo, .cf-rozetler, .cf-aciliyet, .cf-indirim').forEach(function (el) {
+      gozlemci.observe(el);
+    });
+  }
+
+  /* ---------- CONFETTI MOTORU ---------- */
+  function confettiPatlat(x, y, renkler) {
+    renkler = renkler || ['#4F46E5', '#EC4899', '#10B981', '#F59E0B', '#DC2626', '#06B6D4'];
+    const container = document.createElement('div');
+    container.className = 'cf-confetti';
+    document.body.appendChild(container);
+
+    for (let i = 0; i < 40; i++) {
+      const parca = document.createElement('div');
+      parca.className = 'cf-confetti-parca';
+      parca.style.left = (x + (Math.random() - 0.5) * 200) + 'px';
+      parca.style.top = (y + (Math.random() - 0.5) * 100) + 'px';
+      parca.style.background = renkler[Math.floor(Math.random() * renkler.length)];
+      parca.style.width = (4 + Math.random() * 8) + 'px';
+      parca.style.height = (4 + Math.random() * 8) + 'px';
+      parca.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      parca.style.animationDuration = (2 + Math.random() * 2) + 's';
+      parca.style.animationDelay = (Math.random() * 0.5) + 's';
+      container.appendChild(parca);
+    }
+
+    setTimeout(function () { container.remove(); }, 4500);
+  }
+
+  /* ============================================================
+     TAKSIT TABLOSU
+     ============================================================ */
+  function baslatTaksit() {
+    const tablolar = document.querySelectorAll('[data-sk-taksit]');
+    if (!tablolar.length) return;
+
+    tablolar.forEach(function (tablo) {
+      const plan = tablo.dataset.plan;
+      const fiyat = parseInt(tablo.dataset.fiyat, 10);
+      const altLimit = parseInt(tablo.dataset.altLimit, 10) || 0;
+      const minTaksit = parseInt(tablo.dataset.minTaksitTutari, 10) || 100;
+      const paraFormati = tablo.dataset.paraFormati;
+      const vadeEtiketi = tablo.dataset.vadeEtiketi;
+      const taksitKelimesi = tablo.dataset.taksitKelimesi || 'taksit';
+      const govde = tablo.querySelector('[data-sk-taksit-govde]');
+      if (!govde || !plan || !fiyat || fiyat < altLimit) return;
+
+      const satirlar = plan.split(',').map(function (s) { return parseInt(s.trim(), 10); }).filter(Boolean);
+      let html = '';
+
+      satirlar.forEach(function (vade, i) {
+        const aylik = Math.ceil(fiyat / vade);
+        if (aylik < minTaksit) return;
+        const toplam = aylik * vade;
+        const fark = toplam - fiyat;
+        const etiket = fark <= 0 && vadeEtiketi ? '<span class="cf-taksit__vade-etiket">' + vadeEtiketi + '</span>' : '';
+
+        html += '<tr style="animation-delay:' + (i * 0.08) + 's">' +
+          '<td>' + vade + ' ' + taksitKelimesi + etiket + '</td>' +
+          '<td><strong>' + formatPara(aylik, paraFormati) + '</strong></td>' +
+          '<td>' + formatPara(toplam, paraFormati) + '</td>' +
+          '</tr>';
+      });
+
+      govde.innerHTML = html;
+    });
+  }
+
+  /* ============================================================
+     KARGO BARİ
+     ============================================================ */
+  function baslatKargo() {
+    const barlar = document.querySelectorAll('[data-sk-kargo]');
+    if (!barlar.length) return;
+
+    barlar.forEach(function (bar) {
+      const esik = parseInt(bar.dataset.esik, 10);
+      const mesajDevam = bar.dataset.mesajDevam;
+      const mesajTamam = bar.dataset.mesajTamam;
+      const paraFormati = bar.dataset.paraFormati;
+      const mesajEl = bar.querySelector('[data-sk-kargo-mesaj]');
+      const dolguEl = bar.querySelector('[data-sk-kargo-dolgu]');
+      const rayEl = bar.querySelector('[data-sk-kargo-ray]');
+      if (!esik || !mesajEl || !dolguEl) return;
+
+      function guncelle() {
+        fetch('/cart.js', { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+          .then(function (r) { return r.json(); })
+          .then(function (cart) {
+            const toplam = cart.total_price;
+            const kalan = Math.max(0, esik - toplam);
+            const yuzde = esik > 0 ? Math.min(100, Math.round((toplam / esik) * 100)) : 0;
+
+            if (kalan > 0) {
+              mesajEl.textContent = mesajDevam.replace('[tutar]', formatPara(kalan, paraFormati));
+            } else {
+              mesajEl.textContent = mesajTamam;
+              mesajEl.classList.add('cf-kargo__tamam');
+              // Confetti when free shipping reached!
+              if (!bar.dataset.celebrated) {
+                bar.dataset.celebrated = '1';
+                const rect = bar.getBoundingClientRect();
+                confettiPatlat(rect.left + rect.width / 2, rect.top, ['#10B981', '#34D399', '#6EE7B7', '#059669']);
+              }
+            }
+
+            dolguEl.style.width = yuzde + '%';
+            if (rayEl) {
+              rayEl.setAttribute('aria-valuenow', yuzde);
+              rayEl.setAttribute('aria-valuetext', yuzde + '% tamamlandı');
+            }
+          })
+          .catch(function () {});
+      }
+
+      guncelle();
+      document.addEventListener('cart:updated', debounce(guncelle, 300));
+      document.addEventListener('cart:refresh', debounce(guncelle, 300));
+    });
+  }
+
+  /* ============================================================
+     KARGO SURESI SAYACI
+     ============================================================ */
+  function baslatKargoSuresi() {
+    const sayaclar = document.querySelectorAll('[data-sk-aciliyet]');
+    if (!sayaclar.length) return;
+
+    sayaclar.forEach(function (sayac) {
+      const kesimSaati = sayac.dataset.kesimSaati;
+      const mesaj = sayac.dataset.mesaj;
+      const sonMesaj = sayac.dataset.sonMesaj;
+      const mesajEl = sayac.querySelector('[data-sk-aciliyet-mesaj]');
+      if (!kesimSaati || !mesajEl) return;
+
+      const [saat, dakika] = kesimSaati.split(':').map(Number);
+
+      function guncelle() {
+        const simdi = new Date();
+        const bugunKesim = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate(), saat, dakika, 0);
+        if (bugunKesim < simdi) bugunKesim.setDate(bugunKesim.getDate() + 1);
+
+        const kalan = bugunKesim - simdi;
+        const kSaat = Math.floor(kalan / (1000 * 60 * 60));
+        const kDakika = Math.floor((kalan % (1000 * 60 * 60)) / (1000 * 60));
+
+        if (kalan <= 0) {
+          mesajEl.textContent = sonMesaj || 'Bugünkü kargo kesim saati doldu. Yarın kargolanacak.';
+          mesajEl.style.opacity = '0.6';
+        } else {
+          mesajEl.textContent = mesaj
+            .replace('[saat]', kSaat)
+            .replace('[dakika]', kDakika)
+            .replace('[sure]', kSaat + ' saat ' + kDakika + ' dakika');
+        }
+      }
+
+      guncelle();
+      setInterval(guncelle, 30000);
+    });
+  }
+
+  /* ============================================================
+     INDIRIM SAYACI
+     ============================================================ */
   function baslatIndirimSayaclari() {
     const sayaclar = document.querySelectorAll('[data-cf-indirim]');
+    if (!sayaclar.length) return;
 
     sayaclar.forEach(function (sayac) {
       const bitisStr = sayac.dataset.bitis;
@@ -264,6 +217,8 @@
 
       if (!elGun || !elSaat || !elDakika || !elSaniye) return;
 
+      let confettiAtildi = false;
+
       function guncelle() {
         const simdi = new Date();
         const kalan = bitis - simdi;
@@ -275,6 +230,12 @@
           elSaniye.textContent = '00';
           if (elMesaj && mesajBitti) elMesaj.textContent = mesajBitti;
           sayac.style.opacity = '0.6';
+
+          if (!confettiAtildi) {
+            confettiAtildi = true;
+            const rect = sayac.getBoundingClientRect();
+            confettiPatlat(rect.left + rect.width / 2, rect.top, ['#DC2626', '#F97316', '#FBBF24', '#EF4444']);
+          }
           return;
         }
 
@@ -289,6 +250,12 @@
         elSaniye.textContent = String(saniye).padStart(2, '0');
 
         if (elMesaj && mesajAktif) elMesaj.textContent = mesajAktif;
+
+        // Urgency effect when less than 1 hour
+        if (kalan < 1000 * 60 * 60) {
+          sayac.style.borderColor = '#ef4444';
+          sayac.style.boxShadow = '0 0 20px rgba(220,38,38,0.15)';
+        }
       }
 
       guncelle();
@@ -296,9 +263,20 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', baslatIndirimSayaclari);
-  } else {
+  /* ============================================================
+     INIT
+     ============================================================ */
+  function init() {
+    baslatTaksit();
+    baslatKargo();
+    baslatKargoSuresi();
     baslatIndirimSayaclari();
+    baslatGozlemci();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
