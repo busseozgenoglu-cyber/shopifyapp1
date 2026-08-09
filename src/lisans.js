@@ -12,7 +12,7 @@ const METAFIELD_SET = `
 `;
 
 /**
- * Tema bloklari `app.metafields.satiskiti.aktif` degerini okur.
+ * Tema bloklari `app.metafields.convertflow.aktif` degerini okur.
  * "0" ise bloklar hic render edilmez. Metafield yoksa bloklar calismaya devam eder
  * (fail-open) — boylece bir hata magazanin urun sayfasini bozmaz.
  */
@@ -29,7 +29,7 @@ export async function lisansYaz(session, aktifMi) {
         metafields: [
           {
             ownerId,
-            namespace: "$app:satiskiti",
+            namespace: "$app:convertflow",
             key: "aktif",
             type: "single_line_text_field",
             value: aktifMi ? "1" : "0",
@@ -40,12 +40,12 @@ export async function lisansYaz(session, aktifMi) {
 
     const hatalar = res?.data?.metafieldsSet?.userErrors || [];
     if (hatalar.length) {
-      console.warn("[Satis Kiti] Lisans metafield hatasi:", hatalar.map((e) => e.message).join(", "));
+      console.warn("[ConvertFlow TR] Lisans metafield hatasi:", hatalar.map((e) => e.message).join(", "));
       return false;
     }
     return true;
   } catch (err) {
-    console.warn("[Satis Kiti] Lisans yazilamadi:", err.message);
+    console.warn("[ConvertFlow TR] Lisans yazilamadi:", err.message);
     return false;
   }
 }
