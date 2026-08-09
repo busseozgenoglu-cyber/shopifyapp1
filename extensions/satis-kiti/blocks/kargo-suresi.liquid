@@ -5,7 +5,7 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign lisans = app.metafields.satiskiti.aktif
+  assign lisans = app.metafields.convertflow.aktif
   assign kapali = false
   if lisans != blank and lisans == '0'
     assign kapali = true
@@ -46,8 +46,8 @@
 {
   "name": "Kargo saati ve stok",
   "target": "section",
-  "stylesheet": "satiskiti.css",
-  "javascript": "satiskiti.js",
+  "stylesheet": "convertflow.css",
+  "javascript": "convertflow.js",
   "settings": [
     { "type": "header", "content": "Kargo kesim saati" },
     { "type": "checkbox", "id": "kargo_sayaci", "label": "Kargo sayacını göster", "default": true },
