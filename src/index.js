@@ -15,11 +15,41 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const STATIK = join(__dirname, "..", "web", "dist");
 const PORT = parseInt(process.env.PORT || "3000", 10);
 const TEST_MODU = process.env.NODE_ENV !== "production";
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.1.0";
 
 const app = express();
 app.set("trust proxy", 1);
 app.use(compression());
+
+/* ---------- Basit Rate Limiting ---------- */
+const requestCounts = new Map();
+function rateLimit(max = 100, windowMs = 60000) {
+  return (req, res, next) => {
+    const key = req.ip || req.connection.remoteAddress;
+    const now = Date.now();
+    const windowStart = now - windowMs;
+
+    if (!requestCounts.has(key)) requestCounts.set(key, []);
+    const timestamps = requestCounts.get(key).filter(t => t > windowStart);
+    timestamps.push(now);
+    requestCounts.set(key, timestamps);
+
+    if (timestamps.length > max) {
+      return res.status(429).json({ error: "Çok fazla istek. Lütfen biraz bekleyin." });
+    }
+    next();
+  };
+}
+
+/* ---------- Request Logging ---------- */
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const ms = Date.now() - start;
+    console.log(`[ConvertFlow TR] ${req.method} ${req.path} — ${res.statusCode} — ${ms}ms — ${req.ip}`);
+  });
+  next();
+});
 
 /* ---------- Health Check ---------- */
 app.get("/health", (_req, res) => {
@@ -29,10 +59,11 @@ app.get("/health", (_req, res) => {
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV || "development",
     uptime: process.uptime(),
+    memory: process.memoryUsage(),
   });
 });
 
-/* ---------- Herkese açık yasal sayfalar (App Store listing için zorunlu) ---------- */
+/* ---------- Yasal Sayfalar ---------- */
 app.get("/gizlilik-politikasi", (_req, res) => {
   res.sendFile(join(__dirname, "..", "web", "public", "gizlilik-politikasi.html"));
 });
@@ -48,16 +79,17 @@ app.get(
   shopify.redirectToShopifyOrAppRoot()
 );
 
-/* ---------- Webhook'lar (express.json ONCESINDE) ---------- */
+/* ---------- Webhook'lar ---------- */
 app.post(shopify.config.webhooks.path, shopify.processWebhooks({ webhookHandlers }));
 
 /* ---------- Korumali API ---------- */
+app.use("/api/*", rateLimit(60, 60000));
 app.use("/api/*", shopify.validateAuthenticatedSession());
 app.use(express.json({ limit: "256kb" }));
 
 app.get("/api/magaza", async (_req, res) => {
   const session = res.locals.shopify.session;
-  res.json({ domain: session.shop, planlar: PLAN_DETAILS });
+  res.json({ domain: session.shop, planlar: PLAN_DETAILS, version: APP_VERSION });
 });
 
 app.get("/api/abonelik", async (_req, res) => {
@@ -113,7 +145,7 @@ app.use("/api/*", (err, _req, res, _next) => {
   res.status(500).json({ error: "Beklenmeyen bir hata oluştu. Lütfen tekrar dene." });
 });
 
-/* ---------- Gomulu panel ---------- */
+/* ---------- Gömülü Panel ---------- */
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIK, { index: false }));
 
@@ -126,6 +158,9 @@ app.use("/*", shopify.ensureInstalledOnShop(), (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`[ConvertFlow TR] v${APP_VERSION} — ${PORT} portunda calisiyor.`);
-  console.log(`[ConvertFlow TR] Ortam: ${process.env.NODE_ENV || "development"}`);
+  console.log(`╔══════════════════════════════════════════╗`);
+  console.log(`║   ConvertFlow TR v${APP_VERSION}                  ║`);
+  console.log(`║   ${PORT} portunda calisiyor                  ║`);
+  console.log(`║   Ortam: ${(process.env.NODE_ENV || "development").padEnd(24)}║`);
+  console.log(`╚══════════════════════════════════════════╝`);
 });
