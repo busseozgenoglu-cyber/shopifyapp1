@@ -1,6 +1,7 @@
 {%- comment -%}
-  Ücretsiz kargo ilerleme çubuğu. Sepet tutarını Shopify'ın kendi cart nesnesinden okur.
-  Sepet güncellendiğinde /cart.js ile yenilenir — dış servis yok.
+  ConvertFlow TR — Ücretsiz Kargo İlerleme Çubuğu
+  Sepet tutarini Shopify'in kendi cart nesnesinden okur.
+  Sepet guncellendiginde /cart.js ile yenilenir — dis servis yok.
 {%- endcomment -%}
 
 {%- liquid
@@ -25,16 +26,16 @@
 
 {%- unless kapali -%}
 <div
-  class="sk-kargo"
+  class="cf-kargo"
   data-sk-kargo
   data-esik="{{ esik }}"
   data-para-formati="{{ shop.money_format | escape }}"
   data-mesaj-devam="{{ block.settings.mesaj_devam | escape }}"
   data-mesaj-tamam="{{ block.settings.mesaj_tamam | escape }}"
-  style="--sk-vurgu: {{ block.settings.bar_rengi }}; --sk-bar-zemin: {{ block.settings.zemin_rengi }};"
+  style="--cf-vurgu: {{ block.settings.bar_rengi }};"
   {{ block.shopify_attributes }}
 >
-  <p class="sk-kargo__mesaj" data-sk-kargo-mesaj>
+  <p class="cf-kargo__mesaj" data-sk-kargo-mesaj>
     {%- if kalan > 0 -%}
       {{ block.settings.mesaj_devam | replace: '[tutar]', kalan_para }}
     {%- else -%}
@@ -42,15 +43,17 @@
     {%- endif -%}
   </p>
 
-  <div class="sk-kargo__ray" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ yuzde }}" data-sk-kargo-ray>
-    <div class="sk-kargo__dolgu" data-sk-kargo-dolgu style="width: {{ yuzde }}%"></div>
+  <div class="cf-kargo__ray" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ yuzde }}" data-sk-kargo-ray>
+    <div class="cf-kargo__dolgu" data-sk-kargo-dolgu style="width: {{ yuzde }}%"></div>
   </div>
+
+  <p class="cf-kargo__yuzde">{{ yuzde }}% tamamlandı</p>
 </div>
 {%- endunless -%}
 
 {% schema %}
 {
-  "name": "Ücretsiz kargo çubuğu",
+  "name": "Ücretsiz Kargo Çubuğu",
   "target": "section",
   "stylesheet": "convertflow.css",
   "javascript": "convertflow.js",
@@ -65,18 +68,22 @@
     {
       "type": "text",
       "id": "mesaj_devam",
-      "label": "Sınıra ulaşılmadığında",
-      "default": "Ücretsiz kargoya [tutar] kaldı!",
+      "label": "Sınıra ulaşılmadığında mesaj",
+      "default": "Ücretsiz kargoya [tutar] kaldı! 🎁",
       "info": "[tutar] yerine kalan tutar yazılır."
     },
     {
       "type": "text",
       "id": "mesaj_tamam",
-      "label": "Sınır aşıldığında",
-      "default": "Tebrikler, kargo bedava! 🎉"
+      "label": "Sınıra ulaşıldığında mesaj",
+      "default": "🎉 Tebrikler! Ücretsiz kargo hakkın kazandın!"
     },
-    { "type": "color", "id": "bar_rengi", "label": "Çubuk rengi", "default": "#1a7f5a" },
-    { "type": "color", "id": "zemin_rengi", "label": "Çubuk zemini", "default": "#eeeeee" }
+    {
+      "type": "color",
+      "id": "bar_rengi",
+      "label": "İlerleme çubuğu rengi",
+      "default": "#10B981"
+    }
   ]
 }
 {% endschema %}
