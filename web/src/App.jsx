@@ -26,6 +26,7 @@ import {
   DeliveryIcon,
   ShieldCheckIcon,
   ClockIcon,
+  DiscountIcon,
   CheckCircleIcon,
   CircleChevronRightIcon,
   SettingsIcon,
@@ -71,6 +72,13 @@ const BLOKLAR = [
     aciklama: "Kargo kesim saatine kalan süreyi ve gerçek stok adedini gösterir. 'Hemen al' hissiyatı yaratır.",
     ikon: ClockIcon,
     renk: "bg-surface-warning",
+  },
+  {
+    ad: "İndirim Sayacı",
+    yer: "Ürün sayfası",
+    aciklama: "Gerçek indirim bitiş tarihine geri sayım + stok aciliyet çubuğu. 'Fırsat kaçmadan al' hissiyatı yaratır.",
+    ikon: DiscountIcon,
+    renk: "bg-surface-critical",
   },
 ];
 
