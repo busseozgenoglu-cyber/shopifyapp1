@@ -1,4 +1,4 @@
-# Satış Kiti — App Store'a Yükleme (Partner hesabınla)
+# ConvertFlow TR — App Store'a Yükleme (Partner hesabınla)
 
 Bu rehber, uygulamayı **sadece kendi mağazana özel kurulum** değil, **Shopify App Store'da herkese açık listeleme** için hazırlar. Sondaki fark önemli: Partner panelinde iki ayrı "Distribution" (dağıtım) yöntemi var —
 
@@ -29,7 +29,7 @@ Bu rehberde Railway ile ilerliyorum çünkü en az adımı gerektiriyor. Başka 
 
 Daha önce oluşturduysan listede görünür, aç. Oluşturmadıysan:
 
-**Apps → Create app → Create app manually** → isim: `Satış Kiti`.
+**Apps → Create app → Create app manually** → isim: `ConvertFlow TR`.
 
 Açılan sayfadan **Client ID** ve **Client secret**'ı kopyala, bir kenara yaz — birazdan lazım olacak.
 
@@ -38,15 +38,15 @@ Açılan sayfadan **Client ID** ve **Client secret**'ı kopyala, bir kenara yaz 
 ## Adım 2 — Sunucuyu yayınla
 
 ```bash
-cd satiskiti
-git init && git add . && git commit -m "Satis Kiti"
-git remote add origin https://github.com/KULLANICI_ADIN/satiskiti.git
+cd convertflow
+git init && git add . && git commit -m "ConvertFlow TR"
+git remote add origin https://github.com/KULLANICI_ADIN/convertflow.git
 git push -u origin main
 ```
 
-[railway.app](https://railway.app) → **New Project → Deploy from GitHub repo** → `satiskiti` seç.
+[railway.app](https://railway.app) → **New Project → Deploy from GitHub repo** → `convertflow` seç.
 
-**Settings → Networking → Generate Domain** ile bir adres al (örnek: `satiskiti-production.up.railway.app`).
+**Settings → Networking → Generate Domain** ile bir adres al (örnek: `convertflow-production.up.railway.app`).
 
 **Variables** sekmesine gir:
 
@@ -54,7 +54,7 @@ git push -u origin main
 SHOPIFY_API_KEY=<Adım 1'deki Client ID>
 SHOPIFY_API_SECRET=<Adım 1'deki Client secret>
 SCOPES=read_products
-HOST=https://satiskiti-production.up.railway.app
+HOST=https://convertflow-production.up.railway.app
 VITE_SHOPIFY_API_KEY=<Adım 1'deki Client ID>
 NODE_ENV=production
 PORT=3000
@@ -85,11 +85,11 @@ Değiştirdikten sonra tekrar push et, Railway otomatik yeniden derler.
 
 ```toml
 client_id = "ADIM_1_DEKI_CLIENT_ID"
-application_url = "https://satiskiti-production.up.railway.app"
+application_url = "https://convertflow-production.up.railway.app"
 
 [auth]
 redirect_urls = [
-  "https://satiskiti-production.up.railway.app/api/auth/callback"
+  "https://convertflow-production.up.railway.app/api/auth/callback"
 ]
 ```
 
@@ -104,13 +104,13 @@ shopify app config link
 
 ## Adım 5 — Partner panelinde teknik adresleri gir
 
-Apps → Satış Kiti → **Configuration**:
+Apps → ConvertFlow TR → **Configuration**:
 
-- **App URL:** `https://satiskiti-production.up.railway.app`
-- **Allowed redirection URL(s):** `https://satiskiti-production.up.railway.app/api/auth/callback`
+- **App URL:** `https://convertflow-production.up.railway.app`
+- **Allowed redirection URL(s):** `https://convertflow-production.up.railway.app/api/auth/callback`
 - **Embed app in Shopify admin:** açık
 - **GDPR mandatory webhooks** — üçü de:
-  `https://satiskiti-production.up.railway.app/api/webhooks`
+  `https://convertflow-production.up.railway.app/api/webhooks`
 
 **Save**.
 
@@ -119,12 +119,12 @@ Apps → Satış Kiti → **Configuration**:
 ## Adım 6 — Tema eklentisini yükle
 
 ```bash
-cd satiskiti
+cd convertflow
 npm install
 shopify app deploy
 ```
 
-Hangi uygulamaya göndereceğini sorar → `Satış Kiti` seç. Sonunda **Released** yazmalı.
+Hangi uygulamaya göndereceğini sorar → `ConvertFlow TR` seç. Sonunda **Released** yazmalı.
 
 > Koda her değişiklikte bu komutu tekrar çalıştır. Bu komut olmadan bloklar tema düzenleyicide görünmez.
 
@@ -132,7 +132,7 @@ Hangi uygulamaya göndereceğini sorar → `Satış Kiti` seç. Sonunda **Releas
 
 ## Adım 7 — Kendi mağazanda test et (App Store'a göndermeden önce zorunlu adım)
 
-Partner paneli → Apps → Satış Kiti → **Test your app** → **Select store** → mağazanı seç → **Install app**.
+Partner paneli → Apps → ConvertFlow TR → **Test your app** → **Select store** → mağazanı seç → **Install app**.
 
 Kurulduktan sonra:
 
@@ -147,7 +147,7 @@ Kurulduktan sonra:
 
 ## Adım 8 — App listing formunu doldur
 
-Partner paneli → Apps → Satış Kiti → **Distribution**.
+Partner paneli → Apps → ConvertFlow TR → **Distribution**.
 
 Şu ana kadar "Custom distribution" seçili görünüyor olabilir (Adım 7'deki test kurulumu bunu kullandı). Şimdi:
 
