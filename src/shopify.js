@@ -10,19 +10,16 @@ if (!process.env.SHOPIFY_API_KEY || !process.env.SHOPIFY_API_SECRET || !hostName
   console.warn("[ConvertFlow TR] UYARI: SHOPIFY_API_KEY, SHOPIFY_API_SECRET veya HOST eksik.");
 }
 
-/**
- * Veritabani yok. Ayarlarin tamami tema duzenleyicide tutuldugu icin
- * uygulamanin saklamasi gereken kalici veri bulunmuyor.
- * 
- * Gerekli yetkiler:
- * - read_products: Urun fiyatlarini okumak icin
- * - write_products: Metafield yazmak icin (lisans durumu)
- */
+const scopesStr = process.env.SCOPES || "read_products,write_products";
+const scopes = scopesStr.split(",").map((s) => s.trim()).filter(Boolean);
+
+console.log(`[ConvertFlow TR] Yetkiler: ${scopes.join(", ")}`);
+
 const shopify = shopifyApp({
   api: {
     apiKey: process.env.SHOPIFY_API_KEY,
     apiSecretKey: process.env.SHOPIFY_API_SECRET,
-    scopes: (process.env.SCOPES || "read_products,write_products").split(",").map((s) => s.trim()),
+    scopes: scopes,
     apiVersion: LATEST_API_VERSION,
     hostName,
     hostScheme: "https",
