@@ -1,0 +1,156 @@
+/* ConvertFlow TR — tüm bloklar. Tema stillerini ezmemek için dar kapsamlı seçiciler. */
+
+.sk-taksit,
+.sk-kargo,
+.sk-rozetler,
+.sk-aciliyet {
+  font-family: inherit;
+  color: inherit;
+  margin: 16px 0;
+}
+
+/* --- Taksit tablosu --- */
+.sk-taksit {
+  border: 1px solid var(--sk-kenar, #e3e3e3);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sk-taksit__baslik {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: color-mix(in srgb, var(--sk-vurgu, #1a7f5a) 8%, transparent);
+  color: var(--sk-vurgu, #1a7f5a);
+}
+
+.sk-taksit__ikon {
+  display: inline-flex;
+}
+
+.sk-taksit__tablo {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.sk-taksit__tablo th {
+  text-align: left;
+  font-weight: 500;
+  opacity: 0.6;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--sk-kenar, #e3e3e3);
+}
+
+.sk-taksit__tablo td {
+  padding: 10px 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--sk-kenar, #e3e3e3) 60%, transparent);
+}
+
+.sk-taksit__tablo tr:last-child td {
+  border-bottom: none;
+}
+
+.sk-taksit__aylik {
+  font-weight: 700;
+  color: var(--sk-vurgu, #1a7f5a);
+  white-space: nowrap;
+}
+
+.sk-taksit__toplam {
+  opacity: 0.65;
+  white-space: nowrap;
+}
+
+.sk-taksit__rozet {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  margin-left: 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--sk-vurgu, #1a7f5a) 14%, transparent);
+  color: var(--sk-vurgu, #1a7f5a);
+  vertical-align: middle;
+}
+
+.sk-taksit__dipnot {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.75rem;
+  opacity: 0.6;
+  line-height: 1.5;
+  border-top: 1px solid color-mix(in srgb, var(--sk-kenar, #e3e3e3) 60%, transparent);
+}
+
+/* --- Ücretsiz kargo çubuğu --- */
+.sk-kargo__mesaj {
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.sk-kargo__ray {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--sk-bar-zemin, #eee);
+  overflow: hidden;
+}
+
+.sk-kargo__dolgu {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--sk-vurgu, #1a7f5a);
+  transition: width 0.45s ease;
+}
+
+/* --- Güven rozetleri --- */
+.sk-rozetler {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.sk-rozet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.sk-rozet__ikon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--sk-vurgu, #1a7f5a);
+}
+
+/* --- Kargo saati ve stok --- */
+.sk-aciliyet__kargo,
+.sk-aciliyet__stok {
+  margin: 4px 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--sk-vurgu, #c0392b);
+}
+
+.sk-aciliyet__stok::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  margin-right: 7px;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-kargo__dolgu { transition: none; }
+}
