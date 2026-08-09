@@ -15,25 +15,9 @@ import {
   Spinner,
   Divider,
   Tabs,
-  Icon,
   Box,
   ProgressBar,
-  Link,
-  Tooltip,
 } from "@shopify/polaris";
-import {
-  OrderIcon,
-  DeliveryIcon,
-  ShieldTickIcon,
-  ClockIcon,
-  DiscountCodeIcon,
-  CheckCircleIcon,
-  CircleChevronRightIcon,
-  SettingsIcon,
-  ChartBarIcon,
-  ExternalIcon,
-  HelpIcon,
-} from "@shopify/polaris-icons";
 
 async function istek(yol, secenekler = {}) {
   const yanit = await fetch(yol, {
@@ -46,12 +30,34 @@ async function istek(yol, secenekler = {}) {
   return veri;
 }
 
+function SvgIcon({ path, color = "#4F46E5", size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      {path}
+    </svg>
+  );
+}
+
+const ICONS = {
+  taksit: <SvgIcon color="#4F46E5" path={<><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 15h.01"/><path d="M12 15h.01"/><path d="M17 15h.01"/></>} />,
+  kargo: <SvgIcon color="#10B981" path={<><path d="M1 7h13v9H1z"/><path d="M14 10h4l3 3v3h-7z"/><circle cx="5.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></>} />,
+  guven: <SvgIcon color="#F59E0B" path={<><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></>} />,
+  saat: <SvgIcon color="#EC4899" path={<><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></>} />,
+  indirim: <SvgIcon color="#DC2626" path={<><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></>} />,
+  check: <SvgIcon color="#10B981" size={18} path={<><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></>} />,
+  external: <SvgIcon color="#4F46E5" size={18} path={<><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></>} />,
+  help: <SvgIcon color="#64748B" size={18} path={<><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></>} />,
+  chevron: <SvgIcon color="#4F46E5" size={18} path={<><circle cx="12" cy="12" r="10"/><polyline points="12 16 16 12 12 8"/><line x1="8" y1="12" x2="16" y2="12"/></>} />,
+  settings: <SvgIcon color="#64748B" size={18} path={<><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></>} />,
+  chart: <SvgIcon color="#64748B" size={18} path={<><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></>} />,
+};
+
 const BLOKLAR = [
   {
     ad: "Taksit Tablosu",
     yer: "Ürün sayfası",
     aciklama: "Ürün fiyatını taksit planına böler. Varyant değişince tutar anında güncellenir. Türkiye'de satın alma kararını %40 hızlandırır.",
-    ikon: OrderIcon,
+    ikon: ICONS.taksit,
     renk: "bg-surface-info",
     etiket: "En çok kullanılan",
   },
@@ -59,7 +65,7 @@ const BLOKLAR = [
     ad: "Ücretsiz Kargo Çubuğu",
     yer: "Sepet sayfası",
     aciklama: "Ücretsiz kargoya ne kadar kaldığını gösterir. Sepet ortalamasını %15-25 yükseltir. Hedefe ulaşınca confetti patlar! 🎉",
-    ikon: DeliveryIcon,
+    ikon: ICONS.kargo,
     renk: "bg-surface-success",
     etiket: "AOV artırıcı",
   },
@@ -67,7 +73,7 @@ const BLOKLAR = [
     ad: "Güven Rozetleri",
     yer: "Ürün sayfası",
     aciklama: "Kapıda ödeme, iade, güvenli ödeme gibi hizmetlerini görünür kılar. Yeni mağazalarda güven en büyük terk sebebidir.",
-    ikon: ShieldTickIcon,
+    ikon: ICONS.guven,
     renk: "bg-surface-caution",
     etiket: "Güven artırıcı",
   },
@@ -75,7 +81,7 @@ const BLOKLAR = [
     ad: "Kargo Saati & Stok",
     yer: "Ürün sayfası",
     aciklama: "Kargo kesim saatine kalan süreyi ve gerçek stok adedini gösterir. 'Hemen al' hissiyatı yaratır.",
-    ikon: ClockIcon,
+    ikon: ICONS.saat,
     renk: "bg-surface-warning",
     etiket: "Aciliyet yaratır",
   },
@@ -83,7 +89,7 @@ const BLOKLAR = [
     ad: "İndirim Sayacı",
     yer: "Ürün sayfası",
     aciklama: "Gerçek indirim bitiş tarihine geri sayım + stok aciliyet çubuğu. 'Fırsat kaçmadan al' hissiyatı yaratır. Sayaç bitince confetti!",
-    ikon: DiscountCodeIcon,
+    ikon: ICONS.indirim,
     renk: "bg-surface-critical",
     etiket: "Pro paket",
   },
@@ -199,9 +205,9 @@ export default function App() {
   const ilerlemeYuzde = Math.round((tamamlananAdim / kurulumAdimlari.length) * 100);
 
   const sekmeler = [
-    { id: "kurulum", content: "🚀 Kurulum", icon: CircleChevronRightIcon },
-    { id: "bloklar", content: "🎨 Bloklar", icon: SettingsIcon },
-    { id: "paketler", content: "💎 Paketler", icon: ChartBarIcon },
+    { id: "kurulum", content: "🚀 Kurulum", icon: ICONS.chevron },
+    { id: "bloklar", content: "🎨 Bloklar", icon: ICONS.settings },
+    { id: "paketler", content: "💎 Paketler", icon: ICONS.chart },
   ];
 
   if (yukleniyor) {
@@ -230,19 +236,18 @@ export default function App() {
         subtitle="Türk e-ticaret mağazaları için dönüşüm odaklı satış artırıcı bloklar"
         primaryAction={{
           content: "Tema Düzenleyiciyi Aç",
-          icon: ExternalIcon,
+          icon: ICONS.external,
           onAction: temaAc,
         }}
         secondaryActions={[
           {
             content: "Yardım",
-            icon: HelpIcon,
+            icon: ICONS.help,
             onAction: () => window.open("https://convertflow-tr.com/yardim", "_blank"),
           },
         ]}
       >
         <BlockStack gap="500">
-          {/* Durum Banner */}
           <Banner
             tone={abonelik?.aktif ? "success" : "info"}
             title={
@@ -258,50 +263,38 @@ export default function App() {
             </p>
           </Banner>
 
-          {/* Sekmeler */}
           <Tabs tabs={sekmeler} selected={aktifSekme} onSelect={setAktifSekme} fitted>
             <BlockStack gap="500">
-              {/* SEKME 1: Kurulum */}
               {aktifSekme === 0 && (
                 <>
                   <Card>
                     <BlockStack gap="500">
                       <InlineStack align="space-between" blockAlign="center">
-                        <Text as="h2" variant="headingMd">
-                          Kurulum İlerlemesi
-                        </Text>
+                        <Text as="h2" variant="headingMd">Kurulum İlerlemesi</Text>
                         <Badge tone={ilerlemeYuzde === 100 ? "success" : "info"}>
                           {tamamlananAdim} / {kurulumAdimlari.length} tamamlandı
                         </Badge>
                       </InlineStack>
                       <ProgressBar progress={ilerlemeYuzde} size="medium" />
-
                       <BlockStack gap="400">
                         {kurulumAdimlari.map((adim, i) => (
                           <InlineStack key={i} gap="300" blockAlign="start">
                             <Box>
-                              {adim.tamam ? (
-                                <Icon source={CheckCircleIcon} tone="success" />
-                              ) : (
-                                <Text as="span" variant="bodyLg" tone="subdued">
-                                  {i + 1}
-                                </Text>
+                              {adim.tamam ? ICONS.check : (
+                                <Text as="span" variant="bodyLg" tone="subdued">{i + 1}</Text>
                               )}
                             </Box>
                             <BlockStack gap="100">
                               <Text as="h3" variant="headingSm" tone={adim.tamam ? "subdued" : undefined}>
                                 {adim.baslik}
                               </Text>
-                              <Text as="p" variant="bodySm" tone="subdued">
-                                {adim.aciklama}
-                              </Text>
+                              <Text as="p" variant="bodySm" tone="subdued">{adim.aciklama}</Text>
                             </BlockStack>
                           </InlineStack>
                         ))}
                       </BlockStack>
-
                       <InlineStack gap="300" wrap={false}>
-                        <Button variant="primary" onClick={temaAc} icon={ExternalIcon}>
+                        <Button variant="primary" onClick={temaAc} icon={ICONS.external}>
                           Tema Düzenleyiciyi Aç
                         </Button>
                         <Button variant="secondary" onClick={() => setAktifSekme(2)}>
@@ -310,39 +303,25 @@ export default function App() {
                       </InlineStack>
                     </BlockStack>
                   </Card>
-
                   <Card>
                     <BlockStack gap="400">
-                      <Text as="h2" variant="headingMd">
-                        🎯 Nasıl Blok Eklenir?
-                      </Text>
+                      <Text as="h2" variant="headingMd">🎯 Nasıl Blok Eklenir?</Text>
                       <List type="number">
-                        <List.Item>
-                          <b>Tema düzenleyiciyi aç</b> — yukarıdaki düğmeye tıkla.
-                        </List.Item>
-                        <List.Item>
-                          Sol üstten düzenlemek istediğin sayfayı seç — taksit ve indirim için <b>Ürün sayfaları</b>, kargo için <b>Sepet</b>.
-                        </List.Item>
-                        <List.Item>
-                          İlgili bölümde <b>Blok ekle</b> → <b>Uygulamalar</b> sekmesi → <b>ConvertFlow TR</b> altından bloğu seç.
-                        </List.Item>
-                        <List.Item>
-                          Sağdaki panelden ayarları düzenle (renk, mesaj, tarih), <b>Kaydet</b>'e bas.
-                        </List.Item>
+                        <List.Item><b>Tema düzenleyiciyi aç</b> — yukarıdaki düğmeye tıkla.</List.Item>
+                        <List.Item>Sol üstten düzenlemek istediğin sayfayı seç — taksit ve indirim için <b>Ürün sayfaları</b>, kargo için <b>Sepet</b>.</List.Item>
+                        <List.Item>İlgili bölümde <b>Blok ekle</b> → <b>Uygulamalar</b> sekmesi → <b>ConvertFlow TR</b> altından bloğu seç.</List.Item>
+                        <List.Item>Sağdaki panelden ayarları düzenle (renk, mesaj, tarih), <b>Kaydet</b>'e bas.</List.Item>
                       </List>
                     </BlockStack>
                   </Card>
                 </>
               )}
 
-              {/* SEKME 2: Bloklar */}
               {aktifSekme === 1 && (
                 <>
                   <Card>
                     <BlockStack gap="500">
-                      <Text as="h2" variant="headingMd">
-                        🎨 5 Satış Artırıcı Blok
-                      </Text>
+                      <Text as="h2" variant="headingMd">🎨 5 Satış Artırıcı Blok</Text>
                       <Text as="p" variant="bodyMd" tone="subdued">
                         Her blok tema düzenleyicide sürükle-bırak ile kurulur. Kod bilgisi gerekmez. Tüm veriler Shopify'dan gelir.
                       </Text>
@@ -351,34 +330,24 @@ export default function App() {
                           <Card key={b.ad}>
                             <BlockStack gap="300">
                               <InlineStack gap="200" blockAlign="center" wrap={false}>
-                                <Icon source={b.ikon} tone="primary" />
-                                <Text as="h3" variant="headingSm">
-                                  {b.ad}
-                                </Text>
+                                {b.ikon}
+                                <Text as="h3" variant="headingSm">{b.ad}</Text>
                                 <Badge tone="info">{b.etiket}</Badge>
                               </InlineStack>
-                              <Text as="p" variant="bodySm" tone="subdued">
-                                {b.aciklama}
-                              </Text>
-                              <Text as="p" variant="bodySm" tone="subdued">
-                                📍 <b>{b.yer}</b>
-                              </Text>
+                              <Text as="p" variant="bodySm" tone="subdued">{b.aciklama}</Text>
+                              <Text as="p" variant="bodySm" tone="subdued">📍 <b>{b.yer}</b></Text>
                             </BlockStack>
                           </Card>
                         ))}
                       </InlineGrid>
                     </BlockStack>
                   </Card>
-
                   <Banner tone="success" title="💡 Neden bu 5 blok?">
-                    <p>
-                      Türkiye'de Shopify mağazaları en çok bu 5 noktada dönüşüm kaybediyor: fiyat algısı, kargo şeffaflığı, güven eksikliği, erteleme alışkanlığı ve indirim fırsatlarını kaçırma. ConvertFlow TR hepsini tek uygulamada çözer.
-                    </p>
+                    <p>Türkiye'de Shopify mağazaları en çok bu 5 noktada dönüşüm kaybediyor: fiyat algısı, kargo şeffaflığı, güven eksikliği, erteleme alışkanlığı ve indirim fırsatlarını kaçırma. ConvertFlow TR hepsini tek uygulamada çözer.</p>
                   </Banner>
                 </>
               )}
 
-              {/* SEKME 3: Paketler */}
               {aktifSekme === 2 && (
                 <>
                   <InlineGrid columns={{ xs: 1, sm: 2 }} gap="400">
@@ -388,25 +357,18 @@ export default function App() {
                         <Card key={p.key}>
                           <BlockStack gap="400">
                             <InlineStack align="space-between" blockAlign="center">
-                              <Text as="h3" variant="headingLg">
-                                {p.name}
-                              </Text>
+                              <Text as="h3" variant="headingLg">{p.name}</Text>
                               {secili && <Badge tone="success">✓ Aktif</Badge>}
                             </InlineStack>
-
                             <Text as="p" variant="heading2xl">
                               ${p.price}
-                              <Text as="span" variant="bodySm" tone="subdued">
-                                {" "}/ ay
-                              </Text>
+                              <Text as="span" variant="bodySm" tone="subdued">{" "}/ ay</Text>
                             </Text>
-
                             <List type="bullet">
                               {p.features.map((f) => (
                                 <List.Item key={f}>{f}</List.Item>
                               ))}
                             </List>
-
                             <Button
                               variant={secili ? "secondary" : "primary"}
                               disabled={secili}
@@ -421,11 +383,8 @@ export default function App() {
                       );
                     })}
                   </InlineGrid>
-
                   <Banner tone="info">
-                    <p>
-                      💳 Ödeme Shopify faturana eklenir. İstediğin an <b>Ayarlar → Uygulamalar</b> bölümünden iptal edebilirsin. Kredi kartı gerekmez — Shopify hesabından tahsil edilir.
-                    </p>
+                    <p>💳 Ödeme Shopify faturana eklenir. İstediğin an <b>Ayarlar → Uygulamalar</b> bölümünden iptal edebilirsin. Kredi kartı gerekmez — Shopify hesabından tahsil edilir.</p>
                   </Banner>
                 </>
               )}
@@ -433,7 +392,6 @@ export default function App() {
           </Tabs>
 
           <Divider />
-
           <InlineStack align="center" gap="200">
             <Text as="p" variant="bodySm" tone="subdued">
               ConvertFlow TR v1.1.0 — 🚀 Türk e-ticaretinin dönüşüm motoru
@@ -441,7 +399,6 @@ export default function App() {
           </InlineStack>
         </BlockStack>
       </Page>
-
       {toast && (
         <Toast content={toast.mesaj} error={toast.hata} onDismiss={() => setToast(null)} duration={4000} />
       )}
