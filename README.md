@@ -39,6 +39,10 @@ Kapıda ödeme, iade süresi, güvenli ödeme gibi sunduğun hizmetleri ürün s
 ### 4. Kargo Kesim Saati Sayacı
 **"Bugün kargoda: 3 saat 12 dakika içinde sipariş ver"** — gerçek bir son tarih, kararı erteleme alışkanlığını kırar. Stok adediyle birlikte çalışır.
 
+### 5. İndirim Sayacı
+**"⚡ İndirim Fırsatı — 02:14:38:52 kaldı"** — gerçek indirim bitiş tarihine geri sayım yapar. Stok aciliyet çubuğu ve "son X adet kaldı" mesajıyla birlikte çalışır. Sahte "şu an 14 kişi bakıyor" sayacı yerine gerçek veri kullanır — yasal ve etkili.
+**"Bugün kargoda: 3 saat 12 dakika içinde sipariş ver"** — gerçek bir son tarih, kararı erteleme alışkanlığını kırar. Stok adediyle birlikte çalışır.
+
 > **Sahte "şu an 14 kişi bakıyor" sayacı bilerek konmadı.** Uydurma veridir, tüketiciyi yanıltır, Shopify uygulama incelemesinde ret sebebidir ve TKHK kapsamında yaptırımı vardır. Bunun yerine gerçek stok adedi ve gerçek kargo kesim saati kullanılıyor — bunlar da dönüşümü artırır, üstelik yasal.
 
 ---
