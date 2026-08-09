@@ -3,7 +3,7 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign lisans = app.metafields.satiskiti.aktif
+  assign lisans = app.metafields.convertflow.aktif
   assign kapali = false
   if lisans != blank and lisans == '0'
     assign kapali = true
@@ -62,7 +62,7 @@
 {
   "name": "Güven rozetleri",
   "target": "section",
-  "stylesheet": "satiskiti.css",
+  "stylesheet": "convertflow.css",
   "settings": [
     {
       "type": "paragraph",
