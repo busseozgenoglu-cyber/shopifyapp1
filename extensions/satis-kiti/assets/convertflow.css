@@ -1,174 +1,419 @@
-/* ConvertFlow TR — tüm bloklar. Tema stillerini ezmemek için dar kapsamlı seçiciler. */
+/* ============================================================
+   CONVERTFLOW TR — Mükemmel Satış Artırıcı Bloklar
+   Glassmorphism + Animasyon + Gradient + Glow Efektleri
+   ============================================================ */
 
-.sk-taksit,
-.sk-kargo,
-.sk-rozetler,
-.sk-aciliyet {
-  font-family: inherit;
-  color: inherit;
-  margin: 16px 0;
+/* ---------- GLOBAL ANIMATIONS ---------- */
+@keyframes cf-fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- Taksit tablosu --- */
-.sk-taksit {
-  border: 1px solid var(--sk-kenar, #e3e3e3);
+@keyframes cf-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.3); }
+  50% { box-shadow: 0 0 20px 8px rgba(220,38,38,0); }
+}
+
+@keyframes cf-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes cf-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes cf-slide-in {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes cf-scale-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes cf-dot-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+@keyframes cf-progress-shine {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes cf-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(0.5deg); }
+  75% { transform: translateY(3px) rotate(-0.5deg); }
+}
+
+@keyframes cf-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(79,70,229,0.3)); }
+  50% { filter: drop-shadow(0 0 8px rgba(79,70,229,0.6)); }
+}
+
+/* ============================================================
+   TAKSIT TABLOSU
+   ============================================================ */
+
+.cf-taksit {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 14px 0;
+  position: relative;
+  overflow: hidden;
+  animation: cf-fade-in-up 0.6s ease-out;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.cf-taksit:hover {
+  box-shadow: 0 8px 30px rgba(79,70,229,0.1), 0 2px 8px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.cf-taksit::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4F46E5, #7C3AED, #EC4899);
+  border-radius: 16px 16px 0 0;
+}
+
+.cf-taksit__baslik {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.cf-taksit__ikon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #4F46E5, #7C3AED);
   border-radius: 10px;
+  color: white;
+  animation: cf-glow-pulse 3s ease-in-out infinite;
+}
+
+.cf-taksit__tablo {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
-.sk-taksit__baslik {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 14px;
+.cf-taksit__tablo thead tr {
+  background: linear-gradient(90deg, #f1f5f9, #e2e8f0);
+}
+
+.cf-taksit__tablo th {
+  padding: 10px 12px;
   font-weight: 600;
-  font-size: 0.95rem;
-  background: color-mix(in srgb, var(--sk-vurgu, #1a7f5a) 8%, transparent);
-  color: var(--sk-vurgu, #1a7f5a);
-}
-
-.sk-taksit__ikon {
-  display: inline-flex;
-}
-
-.sk-taksit__tablo {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.sk-taksit__tablo th {
-  text-align: left;
-  font-weight: 500;
-  opacity: 0.6;
-  font-size: 0.78rem;
-  letter-spacing: 0.02em;
+  color: #475569;
+  font-size: 11px;
   text-transform: uppercase;
-  padding: 8px 14px;
-  border-bottom: 1px solid var(--sk-kenar, #e3e3e3);
+  letter-spacing: 0.5px;
+  text-align: left;
 }
 
-.sk-taksit__tablo td {
-  padding: 10px 14px;
-  border-bottom: 1px solid color-mix(in srgb, var(--sk-kenar, #e3e3e3) 60%, transparent);
+.cf-taksit__tablo td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  transition: background 0.2s;
 }
 
-.sk-taksit__tablo tr:last-child td {
+.cf-taksit__tablo tbody tr:hover td {
+  background: rgba(79,70,229,0.03);
+}
+
+.cf-taksit__tablo tbody tr:last-child td {
   border-bottom: none;
 }
 
-.sk-taksit__aylik {
-  font-weight: 700;
-  color: var(--sk-vurgu, #1a7f5a);
-  white-space: nowrap;
+.cf-taksit__tablo tbody tr {
+  animation: cf-slide-in 0.4s ease-out both;
 }
 
-.sk-taksit__toplam {
-  opacity: 0.65;
-  white-space: nowrap;
-}
+.cf-taksit__tablo tbody tr:nth-child(1) { animation-delay: 0.05s; }
+.cf-taksit__tablo tbody tr:nth-child(2) { animation-delay: 0.1s; }
+.cf-taksit__tablo tbody tr:nth-child(3) { animation-delay: 0.15s; }
+.cf-taksit__tablo tbody tr:nth-child(4) { animation-delay: 0.2s; }
+.cf-taksit__tablo tbody tr:nth-child(5) { animation-delay: 0.25s; }
 
-.sk-taksit__rozet {
+.cf-taksit__vade-etiket {
   display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 2px 6px;
-  margin-left: 4px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--sk-vurgu, #1a7f5a) 14%, transparent);
-  color: var(--sk-vurgu, #1a7f5a);
-  vertical-align: middle;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
-.sk-taksit__dipnot {
-  margin: 0;
-  padding: 10px 14px;
-  font-size: 0.75rem;
-  opacity: 0.6;
-  line-height: 1.5;
-  border-top: 1px solid color-mix(in srgb, var(--sk-kenar, #e3e3e3) 60%, transparent);
-}
+/* ============================================================
+   KARGO BARİ
+   ============================================================ */
 
-/* --- Ücretsiz kargo çubuğu --- */
-.sk-kargo__mesaj {
-  margin: 0 0 8px;
-  font-size: 0.88rem;
-  font-weight: 600;
-}
-
-.sk-kargo__ray {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--sk-bar-zemin, #eee);
+.cf-kargo {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(145deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1.5px solid #bbf7d0;
+  border-radius: 16px;
+  padding: 18px 16px;
+  margin: 14px 0;
+  position: relative;
   overflow: hidden;
+  animation: cf-fade-in-up 0.6s ease-out;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  transition: all 0.3s ease;
 }
 
-.sk-kargo__dolgu {
+.cf-kargo:hover {
+  box-shadow: 0 8px 25px rgba(16,185,129,0.1);
+  transform: translateY(-2px);
+}
+
+.cf-kargo::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+  border-radius: 16px 16px 0 0;
+}
+
+.cf-kargo__mesaj {
+  font-size: 14px;
+  font-weight: 600;
+  color: #166534;
+  margin-bottom: 12px;
+  text-align: center;
+  animation: cf-bounce 2s ease-in-out infinite;
+}
+
+.cf-kargo__ray {
+  height: 10px;
+  background: #dcfce7;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.cf-kargo__dolgu {
   height: 100%;
-  border-radius: 999px;
-  background: var(--sk-vurgu, #1a7f5a);
-  transition: width 0.45s ease;
+  background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7, #10b981);
+  background-size: 200% 100%;
+  border-radius: 5px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: cf-progress-shine 3s linear infinite;
+  position: relative;
 }
 
-/* --- Güven rozetleri --- */
-.sk-rozetler {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+.cf-kargo__dolgu::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: cf-shimmer 2s infinite;
 }
 
-.sk-rozet {
+.cf-kargo__yuzde {
+  text-align: center;
+  font-size: 12px;
+  color: #15803d;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.cf-kargo__tamam {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #15803d;
+  margin-top: 8px;
+  animation: cf-bounce 1.5s ease-in-out infinite;
+}
+
+.cf-kargo__tamam::before {
+  content: '✓ ';
+  color: #10b981;
+  font-size: 16px;
+}
+
+/* ============================================================
+   GUVEN ROZETLERI
+   ============================================================ */
+
+.cf-rozetler {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+  animation: cf-fade-in-up 0.6s ease-out;
+}
+
+.cf-rozet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: cf-scale-in 0.4s ease-out both;
+  cursor: default;
+}
+
+.cf-rozet:nth-child(1) { animation-delay: 0.05s; }
+.cf-rozet:nth-child(2) { animation-delay: 0.1s; }
+.cf-rozet:nth-child(3) { animation-delay: 0.15s; }
+.cf-rozet:nth-child(4) { animation-delay: 0.2s; }
+
+.cf-rozet:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(79,70,229,0.12);
+  border-color: #c7d2fe;
+  background: linear-gradient(145deg, #ffffff, #eef2ff);
+}
+
+.cf-rozet__ikon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cf-vurgu, #4F46E5);
+  transition: transform 0.3s;
+}
+
+.cf-rozet:hover .cf-rozet__ikon {
+  transform: scale(1.15) rotate(-5deg);
+}
+
+.cf-rozet__metin {
+  white-space: nowrap;
+}
+
+/* ============================================================
+   KARGO SURESI & STOK
+   ============================================================ */
+
+.cf-aciliyet {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1.5px solid #fcd34d;
+  border-radius: 16px;
+  padding: 18px 16px;
+  margin: 14px 0;
+  position: relative;
+  overflow: hidden;
+  animation: cf-fade-in-up 0.6s ease-out;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  transition: all 0.3s ease;
+}
+
+.cf-aciliyet:hover {
+  box-shadow: 0 8px 25px rgba(245,158,11,0.1);
+  transform: translateY(-2px);
+}
+
+.cf-aciliyet::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d);
+  border-radius: 16px 16px 0 0;
+}
+
+.cf-aciliyet__kargo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.85rem;
-  line-height: 1.3;
 }
 
-.sk-rozet__ikon {
-  display: inline-flex;
-  flex-shrink: 0;
-  color: var(--sk-vurgu, #1a7f5a);
+.cf-aciliyet__kargo::before {
+  content: '🚚';
+  font-size: 16px;
+  animation: cf-float 3s ease-in-out infinite;
 }
 
-/* --- Kargo saati ve stok --- */
-.sk-aciliyet__kargo,
-.sk-aciliyet__stok {
-  margin: 4px 0;
-  font-size: 0.88rem;
+.cf-aciliyet__stok {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 1px solid #fde68a;
+  margin-top: 10px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--sk-vurgu, #c0392b);
+  color: #92400e;
+  animation: cf-pulse-glow 2s ease-in-out infinite;
 }
 
-.sk-aciliyet__stok::before {
-  content: "";
-  display: inline-block;
-  width: 7px;
-  height: 7px;
+.cf-aciliyet__stok-nokta {
+  width: 10px;
+  height: 10px;
+  background: #f59e0b;
   border-radius: 50%;
-  background: currentColor;
-  margin-right: 7px;
-  vertical-align: middle;
+  animation: cf-dot-blink 1.5s ease-in-out infinite;
+  flex-shrink: 0;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .sk-kargo__dolgu { transition: none; }
-}
-
 
 /* ============================================================
    INDIRIM SAYACI
    ============================================================ */
 
 .cf-indirim {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(135deg, var(--cf-zemin, #fef2f2) 0%, #fff7ed 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  background: linear-gradient(145deg, #fef2f2 0%, #fff7ed 100%);
   border: 2px solid #fecaca;
-  border-radius: 16px;
-  padding: 18px 16px;
+  border-radius: 20px;
+  padding: 22px 18px;
   position: relative;
   overflow: hidden;
-  margin: 12px 0;
+  margin: 14px 0;
+  animation: cf-fade-in-up 0.7s ease-out;
+  box-shadow: 0 4px 24px rgba(220,38,38,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  transition: all 0.3s ease;
+}
+
+.cf-indirim:hover {
+  box-shadow: 0 10px 40px rgba(220,38,38,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(-3px);
 }
 
 .cf-indirim::before {
@@ -178,131 +423,131 @@
   right: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(220,38,38,0.04) 0%, transparent 70%);
-  animation: cf-pulse-glow 3s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(220,38,38,0.04) 0%, transparent 60%);
+  animation: cf-pulse-glow 4s ease-in-out infinite;
   pointer-events: none;
-}
-
-@keyframes cf-pulse-glow {
-  0%, 100% { transform: scale(1); opacity: 0.4; }
-  50% { transform: scale(1.1); opacity: 0.8; }
 }
 
 .cf-indirim__baslik {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  position: relative;
-  z-index: 1;
-}
-
-.cf-indirim__badge {
-  background: var(--cf-vurgu, #dc2626);
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  animation: cf-badge-pulse 2s ease-in-out infinite;
-}
-
-@keyframes cf-badge-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
-}
-
-.cf-indirim__yuzde {
-  background: #f97316;
-  color: white;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 12px;
-}
-
-.cf-indirim__mesaj {
-  font-size: 13px;
-  color: #7c2d12;
-  margin-bottom: 14px;
-  line-height: 1.5;
-  position: relative;
-  z-index: 1;
-}
-
-.cf-indirim__sayac {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
+  gap: 10px;
   margin-bottom: 12px;
   position: relative;
   z-index: 1;
 }
 
+.cf-indirim__badge {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  animation: cf-pulse-glow 2.5s ease-in-out infinite;
+  box-shadow: 0 2px 10px rgba(220,38,38,0.3);
+}
+
+.cf-indirim__yuzde {
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(249,115,22,0.2);
+}
+
+.cf-indirim__mesaj {
+  font-size: 13px;
+  color: #7c2d12;
+  margin-bottom: 16px;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+}
+
+.cf-indirim__sayac {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+
 .cf-indirim__kutu {
-  background: white;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
   border: 1.5px solid #fca5a5;
-  border-radius: 10px;
-  padding: 8px 10px;
-  min-width: 48px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  min-width: 52px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(220,38,38,0.06);
+  box-shadow: 0 4px 12px rgba(220,38,38,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cf-indirim__kutu:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(220,38,38,0.12);
 }
 
 .cf-indirim__deger {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
-  color: var(--cf-vurgu, #dc2626);
+  color: #dc2626;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   display: block;
+  text-shadow: 0 1px 2px rgba(220,38,38,0.1);
 }
 
 .cf-indirim__etiket {
   font-size: 9px;
   color: #9a3412;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 3px;
+  letter-spacing: 0.6px;
+  margin-top: 4px;
   display: block;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .cf-indirim__ayrac {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--cf-vurgu, #dc2626);
+  font-size: 20px;
+  font-weight: 800;
+  color: #dc2626;
   align-self: center;
-  margin-top: -6px;
+  margin-top: -8px;
+  text-shadow: 0 1px 2px rgba(220,38,38,0.15);
 }
 
 .cf-indirim__stok {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: white;
-  border-radius: 8px;
-  padding: 8px 12px;
+  gap: 8px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 10px 14px;
   border: 1px solid #fed7aa;
   position: relative;
   z-index: 1;
-  margin-top: 8px;
+  margin-top: 10px;
+  animation: cf-pulse-glow 2s ease-in-out infinite;
 }
 
 .cf-indirim__stok-nokta {
-  width: 8px;
-  height: 8px;
-  background: var(--cf-vurgu, #dc2626);
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
   border-radius: 50%;
   animation: cf-dot-blink 1.5s ease-in-out infinite;
   flex-shrink: 0;
-}
-
-@keyframes cf-dot-blink {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(0.7); }
+  box-shadow: 0 0 6px rgba(220,38,38,0.4);
 }
 
 .cf-indirim__stok-metin {
@@ -312,8 +557,8 @@
 }
 
 .cf-indirim__progress {
-  margin-top: 8px;
-  height: 5px;
+  margin-top: 10px;
+  height: 6px;
   background: #fee2e2;
   border-radius: 3px;
   overflow: hidden;
@@ -323,7 +568,33 @@
 
 .cf-indirim__progress-dolgu {
   height: 100%;
-  background: linear-gradient(90deg, var(--cf-vurgu, #dc2626), #f97316);
+  background: linear-gradient(90deg, #dc2626, #f97316, #dc2626);
+  background-size: 200% 100%;
   border-radius: 3px;
-  transition: width 0.5s ease;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: cf-progress-shine 2.5s linear infinite;
+}
+
+/* ============================================================
+   CONFETTI EFEKTI (Indirim bittiğinde)
+   ============================================================ */
+
+.cf-confetti {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cf-confetti-parca {
+  position: absolute;
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  animation: cf-confetti-fall 3s ease-out forwards;
+}
+
+@keyframes cf-confetti-fall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
