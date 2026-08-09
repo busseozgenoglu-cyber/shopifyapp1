@@ -1,55 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gizlilik Politikası — Satış Kiti</title>
-<style>
-  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.65; color: #1a1a1a; }
-  h1 { font-size: 1.6rem; } h2 { font-size: 1.15rem; margin-top: 2rem; }
-  a { color: #1a7f5a; }
-  .guncelleme { color: #666; font-size: 0.9rem; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gizlilik Politikası — ConvertFlow TR</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #1a1a1a; }
+    h1 { color: #4F46E5; font-size: 28px; margin-bottom: 8px; }
+    h2 { color: #333; font-size: 20px; margin-top: 32px; }
+    .date { color: #666; font-size: 14px; margin-bottom: 24px; }
+    a { color: #4F46E5; }
+  </style>
 </head>
 <body>
-<h1>Satış Kiti — Gizlilik Politikası</h1>
-<p class="guncelleme">Son güncelleme: <!-- GÜNCELLEME_TARİHİ --></p>
+  <h1>Gizlilik Politikası</h1>
+  <p class="date">Son güncelleme: 9 Ağustos 2026</p>
 
-<p>
-Satış Kiti ("uygulama"), Shopify mağazalarına taksit tablosu, ücretsiz kargo çubuğu, güven rozetleri
-ve kargo süresi bilgisi eklemek için tema blokları sağlar.
-</p>
+  <p>Bu gizlilik politikası, <strong>ConvertFlow TR</strong> Shopify uygulamasının veri uygulamalarını açıklar.</p>
 
-<h2>Hangi veriyi topluyoruz</h2>
-<p>
-Uygulama <strong>hiçbir müşteri kişisel verisi toplamaz veya saklamaz.</strong> Tüm görüntülenen bilgiler
-(ürün fiyatı, sepet tutarı, stok adedi) doğrudan Shopify'ın mağaza içi verilerinden, sayfa yüklenirken
-tarayıcıda okunur. Bu veriler bizim sunucularımıza hiçbir zaman gönderilmez.
-</p>
+  <h2>1. Toplanan Veriler</h2>
+  <p>ConvertFlow TR, <strong>hiçbir müşteri kişisel verisi toplamaz veya saklamaz</strong>. Uygulama, tüm verileri doğrudan Shopify'ın kendi API ve Liquid nesnelerinden okur:</p>
+  <ul>
+    <li>Ürün fiyatları ve varyant bilgileri (taksit hesaplaması için)</li>
+    <li>Sepet toplam tutarı (kargo çubuğu için)</li>
+    <li>Mağaza ayarları (kargo kesim saati, stok bilgisi)</li>
+  </ul>
 
-<p>Sakladığımız tek veri, mağaza sahibinin uygulama içinde belirlediği görünüm ayarlarıdır:</p>
-<ul>
-  <li>Mağaza domaini (Shopify OAuth kurulumunun standart bir parçası)</li>
-  <li>Abonelik paketi bilgisi (Shopify Billing API üzerinden)</li>
-</ul>
+  <h2>2. Veri Saklama</h2>
+  <p>Uygulamanın kendisi bir veritabanı kullanmaz. Tüm ayarlar ve yapılandırmalar Shopify tema metafield'leri üzerinde saklanır. Bu veriler yalnızca ilgili Shopify mağazası tarafından erişilebilir.</p>
 
-<h2>Üçüncü taraflarla paylaşım</h2>
-<p>Topladığımız veri hiçbir üçüncü tarafla paylaşılmaz veya satılmaz.</p>
+  <h2>3. Üçüncü Taraflarla Paylaşım</h2>
+  <p>ConvertFlow TR, hiçbir veriyi üçüncü taraflarla paylaşmaz, satmaz veya aktarmaz.</p>
 
-<h2>Veri saklama ve silme</h2>
-<p>
-Uygulama mağazadan kaldırıldığında (app/uninstalled), ilgili mağaza bilgileri sistemimizden silinir.
-Shopify'ın zorunlu kıldığı <code>customers/data_request</code>, <code>customers/redact</code> ve
-<code>shop/redact</code> webhook'larını destekliyoruz; bu uygulama müşteri verisi saklamadığı için
-bu taleplere "saklanan veri yok" yanıtı döneriz.
-</p>
+  <h2>4. KVKK Uyumu</h2>
+  <p>Uygulama, Shopify'ın zorunlu GDPR/KVKK webhook'larına (customers/data_request, customers/redact, shop/redact) tam uyum sağlar. Veri silme talepleri otomatik işlenir.</p>
 
-<h2>Çerezler</h2>
-<p>Uygulama, Shopify admin oturumu dışında hiçbir izleme çerezi kullanmaz.</p>
+  <h2>5. İletişim</h2>
+  <p>Gizlilik politikası ile ilgili sorularınız için: <a href="mailto:BURAYA_EPOSTA_ADRESI">BURAYA_EPOSTA_ADRESI</a></p>
 
-<h2>İletişim</h2>
-<p>
-Sorularınız için: <a href="mailto:BURAYA_EPOSTA_ADRESI">BURAYA_EPOSTA_ADRESI</a>
-</p>
+  <p style="margin-top: 40px; color: #666; font-size: 13px;">
+    ConvertFlow TR — Türk e-ticaret mağazaları için dönüşüm odaklı Shopify uygulaması.
+  </p>
 </body>
 </html>
