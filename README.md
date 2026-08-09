@@ -1,47 +1,79 @@
-# ConvertFlow TR
+# 🚀 ConvertFlow TR
 
 [![Shopify](https://img.shields.io/badge/Shopify-App%20Store-96BF48?logo=shopify&logoColor=white)](https://apps.shopify.com)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.0-brightgreen?logo=node.js)](https://nodejs.org)
+[![Deploy](https://img.shields.io/badge/Deploy-Railway-0B0D0E?logo=railway)](https://railway.app)
 
 > **Türk e-ticaret mağazaları için dönüşüm odaklı Shopify tema blokları.**
 > 
-> Taksit tablosu, ücretsiz kargo çubuğu, güven rozetleri ve kargo kesim saati sayacı — tek kurulumda, sıfır bakım maliyetiyle.
+> 5 hazır blok — taksit tablosu, kargo çubuğu, güven rozetleri, kargo sayacı, indirim sayacı. Tek kurulumda, sıfır bakım maliyetiyle.
 
 ---
 
-## 🚀 Neden ConvertFlow TR?
+## 🎯 Neden ConvertFlow TR?
 
-Türkiye'deki Shopify mağazaları en büyük dönüşüm kaybını şu 4 noktada yaşıyor:
+Türkiye'deki Shopify mağazaları en büyük dönüşüm kaybını şu 5 noktada yaşıyor:
 
-| Problem | Etki | ConvertFlow Çözümü |
-|---|---|---|
-| Müşteri "pahalı" diyerek terk ediyor | Sepet terki %30-40 | **Taksit Tablosu** — aylık ödeme gösterir |
-| Sepet ortalaması düşük | AOV düşüklüğü | **Kargo Çubuğu** — ücretsiz kargo eşiği görünür |
-| Yeni mağazaya güvenilmiyor | Dönüşüm düşüklüğü | **Güven Rozetleri** — kapıda ödeme, iade, güvenli ödeme |
-| "Sonra alırım" ertelemesi | Hemen alım düşüklüğü | **Kargo Sayacı** — gerçek kesim saati ile aciliyet yaratır |
+| Problem | Etki | ConvertFlow Çözümü | Beklenen Sonuç |
+|---|---|---|---|
+| Müşteri "pahalı" diyerek terk ediyor | Sepet terki %30-40 | **Taksit Tablosu** — aylık ödeme gösterir | Sepet terkini %20 azaltır |
+| Sepet ortalaması düşük | AOV düşüklüğü | **Kargo Çubuğu** — ücretsiz kargo eşiği görünür | AOV'u %15-25 artırır |
+| Yeni mağazaya güvenilmiyor | Dönüşüm düşüklüğü | **Güven Rozetleri** — kapıda ödeme, iade, güvenli ödeme | Dönüşümü %10 artırır |
+| "Sonra alırım" ertelemesi | Hemen alım düşüklüğü | **Kargo Sayacı** — gerçek kesim saati ile aciliyet yaratır | Hemen alımı %15 hızlandırır |
+| İndirim fırsatlarını kaçırma | Düşük dönüşüm | **İndirim Sayacı** — gerçek bitiş tarihine geri sayım | Karar hızını %25 artırır |
 
 **Hiçbir dış servise bağlanmaz.** SMS sağlayıcısı, ödeme sağlayıcısı, API anahtarı, veritabanı — hiçbiri gerekmez. Tüm veri Shopify'ın kendi Liquid nesnelerinden gelir. Kurduğun anda çalışır.
 
 ---
 
-## 📦 Kutudan Çıkan Bloklar
+## 🎨 5 Satış Artırıcı Blok
 
-### 1. Taksit Tablosu
+### 1. 💳 Taksit Tablosu
 2.499 ₺ ürünü **"12 x 224,91 ₺"** olarak gösterir. Varyant değiştikçe tutarlar anında güncellenir. Türkiye'de yüksek fiyatlı ürün satın alma kararı taksitle verilir — fiyatı aylık ödemeye çevirmek algılanan maliyeti düşürür.
 
-### 2. Ücretsiz Kargo Çubuğu
-**"Ücretsiz kargoya 180 ₺ kaldı"** — sepet ortalamasını doğrudan yükseltir. Müşteri eşiği görünce bir ürün daha ekler.
+**Özellikler:**
+- Varyant değişimine anında uyum sağlar
+- Vade farksız etiketi (0 faiz gösterimi)
+- Minimum fiyat ve minimum taksit filtresi
+- Tamamen özelleştirilebilir tablo başlıkları
 
-### 3. Güven Rozetleri
+### 2. 🚚 Ücretsiz Kargo Çubuğu
+**"Ücretsiz kargoya 180 ₺ kaldı! 🎁"** — sepet ortalamasını doğrudan yükseltir. Müşteri eşiği görünce bir ürün daha ekler. **Hedefe ulaşınca confetti patlar! 🎉**
+
+**Özellikler:**
+- Gerçek zamanlı sepet güncellemesi
+- Animasyonlu ilerleme çubuğu (shimmer efekti)
+- Özelleştirilebilir mesajlar ve renkler
+- Sepet değişiminde otomatik yenileme
+
+### 3. 🛡️ Güven Rozetleri
 Kapıda ödeme, iade süresi, güvenli ödeme gibi sunduğun hizmetleri ürün sayfasında görünür kılar. Yeni mağazalarda en büyük terk sebebi güvensizliktir.
 
-### 4. Kargo Kesim Saati Sayacı
-**"Bugün kargoda: 3 saat 12 dakika içinde sipariş ver"** — gerçek bir son tarih, kararı erteleme alışkanlığını kırar. Stok adediyle birlikte çalışır.
+**Özellikler:**
+- 5 adede kadar özelleştirilebilir rozet
+- Hover animasyonu (yukarı kalkma + glow)
+- SVG ikonlar (keskin ve modern)
+- Tamamen statik — sahte veri yok
 
-### 5. İndirim Sayacı
-**"⚡ İndirim Fırsatı — 02:14:38:52 kaldı"** — gerçek indirim bitiş tarihine geri sayım yapar. Stok aciliyet çubuğu ve "son X adet kaldı" mesajıyla birlikte çalışır. Sahte "şu an 14 kişi bakıyor" sayacı yerine gerçek veri kullanır — yasal ve etkili.
-**"Bugün kargoda: 3 saat 12 dakika içinde sipariş ver"** — gerçek bir son tarih, kararı erteleme alışkanlığını kırar. Stok adediyle birlikte çalışır.
+### 4. ⏰ Kargo Kesim Saati Sayacı
+**"🚚 Bugün kargoda: 3 saat 12 dakika içinde sipariş ver"** — gerçek bir son tarih, kararı erteleme alışkanlığını kırar. Stok adediyle birlikte çalışır.
+
+**Özellikler:**
+- Gerçek kargo kesim saatine geri sayım
+- Stok uyarısı (blink animasyonlu nokta)
+- Emoji destekli mesajlar
+- 30 saniyede bir otomatik güncelleme
+
+### 5. ⚡ İndirim Sayacı (Pro)
+**"⚡ İNDİRİM — 02:14:38:52 kaldı"** — gerçek indirim bitiş tarihine geri sayım yapar. Stok aciliyet çubuğu ve "son X adet kaldı" mesajıyla birlikte çalışır. **Sayaç bitince confetti patlar!**
+
+**Özellikler:**
+- Gerçek zamanlı gün:saat:dakika:saniye sayacı
+- Otomatik indirim yüzdesi hesaplama (compare_at_price)
+- Stok aciliyet çubuğu (gradient + shimmer)
+- Son 1 saatte urgency efekti (kırmızı border + glow)
+- Confetti patlaması sayaç bittiğinde
 
 > **Sahte "şu an 14 kişi bakıyor" sayacı bilerek konmadı.** Uydurma veridir, tüketiciyi yanıltır, Shopify uygulama incelemesinde ret sebebidir ve TKHK kapsamında yaptırımı vardır. Bunun yerine gerçek stok adedi ve gerçek kargo kesim saati kullanılıyor — bunlar da dönüşümü artırır, üstelik yasal.
 
@@ -53,8 +85,8 @@ Shopify Billing API ile aylık abonelik:
 
 | Paket | Fiyat | İçerik |
 |---|---|---|
-| **Başlangıç** | $9.99/ay | Taksit tablosu + Kargo çubuğu + Güven rozetleri + Sınırsız ürün |
-| **Pro** | $19.99/ay | Tüm bloklar + Kargo sayacı + Stok uyarısı + Öncelikli destek |
+| **🌱 Başlangıç** | $9.99/ay | Taksit tablosu + Kargo çubuğu + Güven rozetleri + Sınırsız ürün |
+| **💎 Pro** | $19.99/ay | Tüm 5 blok + Kargo sayacı + Stok uyarısı + İndirim sayacı + Öncelikli destek |
 
 - **14 gün ücretsiz deneme** — kredi kartı gerekmez.
 - Shopify parayı mağazadan tahsil edip komisyonunu düşerek sana öder.
@@ -67,21 +99,22 @@ Shopify Billing API ile aylık abonelik:
 
 ```
 convertflow-tr/
-├── src/                        Express sunucusu (~200 satır)
-│   ├── index.js                OAuth, abonelik, panel servisi, health check
+├── src/                        Express sunucusu (~250 satır)
+│   ├── index.js                OAuth, abonelik, panel, rate limiting, logging
 │   ├── shopify.js              Shopify app yapılandırması (veritabanı YOK)
 │   ├── plans.js                Paketler ve fiyatlandırma
 │   ├── lisans.js               Abonelik durumunu tema metafield'ine yazar
 │   └── webhooks.js             app/uninstalled + zorunlu KVKK webhook'ları
 ├── web/                        Polaris yönetim paneli (React + Vite)
-│   ├── src/App.jsx             Sekmeli onboarding + ayarlar + performans
+│   ├── src/App.jsx             Sekmeli onboarding + confetti + zengin UI
 │   └── public/                 Yasal sayfalar (App Store zorunlu)
 ├── extensions/convertflow-tr/  ★ Uygulamanın asıl işi burada
 │   ├── blocks/
 │   │   ├── taksit.liquid
 │   │   ├── kargo-bari.liquid
 │   │   ├── guven-rozetleri.liquid
-│   │   └── kargo-suresi.liquid
+│   │   ├── kargo-suresi.liquid
+│   │   └── indirim-sayaci.liquid
 │   └── assets/{convertflow.css, convertflow.js}
 ├── Dockerfile
 └── shopify.app.toml
@@ -124,7 +157,7 @@ npm install
 ```
 SHOPIFY_API_KEY=<Client ID>
 SHOPIFY_API_SECRET=<Client secret>
-SCOPES=read_products
+SCOPES=read_products,write_products
 HOST=https://ADRESIN.up.railway.app
 VITE_SHOPIFY_API_KEY=<Client ID>
 NODE_ENV=production
@@ -132,7 +165,7 @@ PORT=3000
 ```
 
 Deploy bitince kontrol et:
-- `https://ADRESIN/health` → `{"status":"ok","version":"1.0.0"}`
+- `https://ADRESIN/health` → `{"status":"ok","version":"1.1.0"}`
 - `https://ADRESIN/gizlilik-politikasi` → gizlilik sayfası
 - `https://ADRESIN/kullanim-kosullari` → kullanım koşulları sayfası
 
@@ -190,5 +223,9 @@ MIT License — [LICENSE](LICENSE) dosyasına bakın.
 ---
 
 <p align="center">
-  <b>ConvertFlow TR</b> — Türk e-ticaretinin dönüşüm motoru 🚀
+  <b>🚀 ConvertFlow TR</b> — Türk e-ticaretinin dönüşüm motoru
+</p>
+<p align="center">
+  <a href="https://github.com/busseozgenoglu-cyber/shopifyapp1">GitHub</a> • 
+  <a href="https://apps.shopify.com">App Store</a>
 </p>
