@@ -9,6 +9,10 @@ embedded = true
 [build]
 include_config_on_deploy = true
 
+[access_scopes]
+# Use custom access scopes for the app
+scopes = "read_products,write_products"
+
 [auth]
 redirect_urls = [
   "https://BURAYA_ADRES_GIR.up.railway.app/api/auth/callback"
