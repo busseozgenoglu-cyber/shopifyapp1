@@ -31,7 +31,7 @@ ConvertFlow TR, Türkiye'deki Shopify mağazalarının en büyük dönüşüm ka
 yaşadığı noktalara odaklanır: müşteri terk ediyor çünkü fiyat yüksek görünüyor,
 kargo ücreti şeffaf değil, mağazaya güvenmiyor.
 
-4 hazır tema bloğu ile bu sorunları tek uygulamada çözer:
+5 hazır tema bloğu ile bu sorunları tek uygulamada çözer:
 
 • Taksit Tablosu — 2.499 ₺ yerine "12 x 224,91 ₺" gösterir. Varyant değiştikçe
   tutarlar anında güncellenir. Türkiye'de taksit algısı satın alma kararını
