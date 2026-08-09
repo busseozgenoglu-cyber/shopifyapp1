@@ -7,7 +7,7 @@ import { billingConfig } from "./plans.js";
 const hostName = (process.env.HOST || "").replace(/^https?:\/\//, "").replace(/\/$/, "");
 
 if (!process.env.SHOPIFY_API_KEY || !process.env.SHOPIFY_API_SECRET || !hostName) {
-  console.warn("[Satis Kiti] UYARI: SHOPIFY_API_KEY, SHOPIFY_API_SECRET veya HOST eksik.");
+  console.warn("[ConvertFlow TR] UYARI: SHOPIFY_API_KEY, SHOPIFY_API_SECRET veya HOST eksik.");
 }
 
 /**
