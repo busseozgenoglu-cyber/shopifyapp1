@@ -15,12 +15,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const STATIK = join(__dirname, "..", "web", "dist");
 const PORT = parseInt(process.env.PORT || "3000", 10);
 const TEST_MODU = process.env.NODE_ENV !== "production";
+const APP_VERSION = "1.0.0";
 
 const app = express();
 app.set("trust proxy", 1);
 app.use(compression());
 
-app.get("/health", (_req, res) => res.json({ status: "ok" }));
+/* ---------- Health Check ---------- */
+app.get("/health", (_req, res) => {
+  res.json({
+    status: "ok",
+    version: APP_VERSION,
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV || "development",
+    uptime: process.uptime(),
+  });
+});
 
 /* ---------- Herkese açık yasal sayfalar (App Store listing için zorunlu) ---------- */
 app.get("/gizlilik-politikasi", (_req, res) => {
@@ -38,8 +48,9 @@ app.get(
   async (_req, res, next) => {
     try {
       await shopify.api.webhooks.register({ session: res.locals.shopify.session });
+      console.log(`[ConvertFlow TR] Webhook kaydedildi: ${res.locals.shopify.session.shop}`);
     } catch (err) {
-      console.error("[Satis Kiti] Webhook kaydi:", err.message);
+      console.error(`[ConvertFlow TR] Webhook kaydi hatasi: ${err.message}`);
     }
     next();
   },
@@ -74,7 +85,7 @@ app.get("/api/abonelik", async (_req, res) => {
       abonelikId: sonuc?.appSubscriptions?.[0]?.id || null,
     });
   } catch (err) {
-    console.error("[Satis Kiti] Abonelik kontrolu:", err.message);
+    console.error(`[ConvertFlow TR] Abonelik kontrolu: ${err.message}`);
     res.json({ aktif: false, plan: null, planAdi: null });
   }
 });
@@ -91,9 +102,10 @@ app.post("/api/abonelik", async (req, res) => {
       isTest: TEST_MODU,
       returnUrl: `${process.env.HOST}/?shop=${session.shop}`,
     });
+    console.log(`[ConvertFlow TR] Abonelik baslatildi: ${session.shop} -> ${planAdi}`);
     res.json({ onayUrl });
   } catch (err) {
-    console.error("[Satis Kiti] Abonelik baslatma:", err.message);
+    console.error(`[ConvertFlow TR] Abonelik baslatma hatasi: ${err.message}`);
     res.status(500).json({ error: "Abonelik başlatılamadı. Tekrar dene." });
   }
 });
@@ -104,9 +116,10 @@ app.post("/api/lisans", async (req, res) => {
   res.json({ ok: yazildi });
 });
 
+/* ---------- Global Hata Yakalama ---------- */
 app.use("/api/*", (err, _req, res, _next) => {
-  console.error("[Satis Kiti] API hatasi:", err);
-  res.status(500).json({ error: "Beklenmeyen bir hata oluştu." });
+  console.error(`[ConvertFlow TR] API hatasi: ${err.message}`, err.stack);
+  res.status(500).json({ error: "Beklenmeyen bir hata oluştu. Lütfen tekrar dene." });
 });
 
 /* ---------- Gomulu panel ---------- */
@@ -121,4 +134,7 @@ app.use("/*", shopify.ensureInstalledOnShop(), (_req, res) => {
   res.status(200).set("Content-Type", "text/html").send(readFileSync(dosya));
 });
 
-app.listen(PORT, () => console.log(`[Satis Kiti] ${PORT} portunda calisiyor.`));
+app.listen(PORT, () => {
+  console.log(`[ConvertFlow TR] v${APP_VERSION} — ${PORT} portunda calisiyor.`);
+  console.log(`[ConvertFlow TR] Ortam: ${process.env.NODE_ENV || "development"}`);
+});
