@@ -1,7 +1,7 @@
 {%- comment -%}
-  Kargo kesim saati sayacı + gerçek stok bilgisi.
-  Sahte "şu an X kişi bakıyor" sayacı bilerek konmadı: uydurma veridir,
-  tüketiciyi yanıltır ve Shopify incelemesinde ret sebebidir.
+  ConvertFlow TR — Kargo Kesim Saati Sayaci + Gercek Stok Bilgisi
+  Sahte "su an X kisi bakiyor" sayaci bilerek konmadi: uydurma veridir,
+  tuketiciyi yaniltir ve Shopify incelemesinde ret sebebidir.
 {%- endcomment -%}
 
 {%- liquid
@@ -16,25 +16,28 @@
 {%- unless kapali -%}
 {%- if product != blank -%}
 <div
-  class="sk-aciliyet"
+  class="cf-aciliyet"
   data-sk-aciliyet
   data-kesim-saati="{{ block.settings.kesim_saati }}"
   data-mesaj="{{ block.settings.kargo_mesaji | escape }}"
   data-son-mesaj="{{ block.settings.gecti_mesaji | escape }}"
-  style="--sk-vurgu: {{ block.settings.vurgu_rengi }};"
+  style="--cf-vurgu: {{ block.settings.vurgu_rengi }};"
   {{ block.shopify_attributes }}
 >
   {%- if block.settings.kargo_sayaci -%}
-    <p class="sk-aciliyet__kargo" data-sk-aciliyet-mesaj>{{ block.settings.kargo_mesaji }}</p>
+    <p class="cf-aciliyet__kargo" data-sk-aciliyet-mesaj>{{ block.settings.kargo_mesaji }}</p>
   {%- endif -%}
 
   {%- if block.settings.stok_goster -%}
     {%- if secili.inventory_management != blank and secili.inventory_policy == 'deny' -%}
       {%- assign stok = secili.inventory_quantity -%}
       {%- if stok > 0 and stok <= block.settings.stok_esigi -%}
-        <p class="sk-aciliyet__stok">
-          {{ block.settings.stok_mesaji | replace: '[adet]', stok }}
-        </p>
+        <div class="cf-aciliyet__stok">
+          <span class="cf-aciliyet__stok-nokta"></span>
+          <span class="cf-aciliyet__stok-metin">
+            {{ block.settings.stok_mesaji | replace: '[adet]', stok }}
+          </span>
+        </div>
       {%- endif -%}
     {%- endif -%}
   {%- endif -%}
@@ -44,7 +47,7 @@
 
 {% schema %}
 {
-  "name": "Kargo saati ve stok",
+  "name": "Kargo Saati & Stok",
   "target": "section",
   "stylesheet": "convertflow.css",
   "javascript": "convertflow.js",
@@ -61,32 +64,38 @@
     {
       "type": "text",
       "id": "kargo_mesaji",
-      "label": "Kesim saatinden önce",
-      "default": "Bugün kargoda: [sure] içinde sipariş ver",
-      "info": "[sure] yerine kalan süre yazılır."
+      "label": "Kargo mesajı",
+      "default": "🚚 Bugün kargoda! [saat] saat [dakika] dakika içinde sipariş ver.",
+      "info": "[saat], [dakika], [sure] yer tutucuları kullanılabilir."
     },
     {
       "type": "text",
       "id": "gecti_mesaji",
-      "label": "Kesim saatinden sonra",
-      "default": "Yarın kargolanır"
+      "label": "Kesim saati geçti mesajı",
+      "default": "⏰ Bugünkü kargo kesim saati doldu. Yarın kargolanacak."
     },
     { "type": "header", "content": "Stok uyarısı" },
-    { "type": "checkbox", "id": "stok_goster", "label": "Az kalan stoğu göster", "default": true },
+    { "type": "checkbox", "id": "stok_goster", "label": "Stok uyarısı göster", "default": true },
     {
       "type": "number",
       "id": "stok_esigi",
-      "label": "Bu adedin altındaysa uyar",
-      "default": 10
+      "label": "Stok eşik değeri",
+      "default": 10,
+      "info": "Bu değerin altındaki stoklarda uyarı gösterilir."
     },
     {
       "type": "text",
       "id": "stok_mesaji",
       "label": "Stok mesajı",
-      "default": "Son [adet] adet!",
-      "info": "[adet] yerine gerçek stok sayısı yazılır. Stok takibi kapalı ürünlerde hiç gösterilmez."
+      "default": "🔥 Stokta sadece [adet] adet kaldı!",
+      "info": "[adet] yerine gerçek stok adedi yazılır."
     },
-    { "type": "color", "id": "vurgu_rengi", "label": "Vurgu rengi", "default": "#c0392b" }
+    {
+      "type": "color",
+      "id": "vurgu_rengi",
+      "label": "Vurgu rengi",
+      "default": "#F59E0B"
+    }
   ]
 }
 {% endschema %}
