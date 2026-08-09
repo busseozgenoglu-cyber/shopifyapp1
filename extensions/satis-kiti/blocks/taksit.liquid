@@ -1,6 +1,7 @@
 {%- comment -%}
-  Taksit tablosu — ürün fiyatını taksit planına böler.
-  Fiyat Shopify'dan gelir, hiçbir dış servise istek atılmaz.
+  ConvertFlow TR — Taksit Tablosu
+  Urun fiyatini taksit planina boler. Varyant degisince tutar aninda guncellenir.
+  Hicbir dis servise baglanmaz. Tum veri Shopify'in kendi nesnelerinden gelir.
 {%- endcomment -%}
 
 {%- liquid
@@ -20,29 +21,29 @@
     {%- assign plan_satirlari = block.settings.taksit_plani | split: ',' -%}
 
     <div
-      class="sk-taksit"
+      class="cf-taksit"
       data-sk-taksit
       data-urun="{{ product.handle }}"
       data-fiyat="{{ fiyat }}"
       data-plan="{{ block.settings.taksit_plani | escape }}"
       data-alt-limit="{{ block.settings.alt_limit }}"
-      data-min-taksit="{{ block.settings.min_taksit_tutari }}"
+      data-min-taksit-tutari="{{ block.settings.min_taksit_tutari }}"
       data-para-formati="{{ shop.money_format | escape }}"
       data-vade-etiketi="{{ block.settings.vade_farksiz_etiketi | escape }}"
       data-taksit-kelimesi="{{ block.settings.taksit_kelimesi | escape }}"
-      style="--sk-vurgu: {{ block.settings.vurgu_rengi }}; --sk-kenar: {{ block.settings.kenarlik_rengi }};"
+      style="--cf-vurgu: {{ block.settings.vurgu_rengi }};"
       {{ block.shopify_attributes }}
     >
-      <div class="sk-taksit__baslik">
-        <span class="sk-taksit__ikon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>
+      <div class="cf-taksit__baslik">
+        <span class="cf-taksit__ikon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 15h.01"/><path d="M12 15h.01"/><path d="M17 15h.01"/>
           </svg>
         </span>
         <span>{{ block.settings.baslik }}</span>
       </div>
 
-      <table class="sk-taksit__tablo">
+      <table class="cf-taksit__tablo">
         <thead>
           <tr>
             <th scope="col">{{ block.settings.sutun_taksit }}</th>
@@ -51,37 +52,18 @@
           </tr>
         </thead>
         <tbody data-sk-taksit-govde>
-          {%- for satir in plan_satirlari -%}
-            {%- assign parcalar = satir | split: ':' -%}
-            {%- assign adet = parcalar[0] | strip | plus: 0 -%}
-            {%- assign oran = 0 -%}
-            {%- if parcalar.size > 1 -%}
-              {%- assign oran = parcalar[1] | strip | times: 1.0 -%}
+          {% for vade in plan_satirlari %}
+            {%- assign vade_sayi = vade | strip | plus: 0 -%}
+            {%- if vade_sayi > 0 -%}
+              <tr>
+                <td>{{ vade_sayi }} {{ block.settings.taksit_kelimesi }}</td>
+                <td><strong>{{ fiyat | divided_by: vade_sayi | money }}</strong></td>
+                <td>{{ fiyat | money }}</td>
+              </tr>
             {%- endif -%}
-
-            {%- if adet > 1 -%}
-              {%- assign vade_farki = fiyat | times: oran | divided_by: 100.0 -%}
-              {%- assign toplam = fiyat | plus: vade_farki | round -%}
-              {%- assign aylik = toplam | divided_by: adet | round -%}
-
-              {%- if aylik >= block.settings.min_taksit_tutari -%}
-                <tr>
-                  <td>
-                    <strong>{{ adet }}</strong> {{ block.settings.taksit_kelimesi }}
-                    {%- if oran == 0 %} <span class="sk-taksit__rozet">{{ block.settings.vade_farksiz_etiketi }}</span>{% endif -%}
-                  </td>
-                  <td class="sk-taksit__aylik">{{ aylik | money }}</td>
-                  <td class="sk-taksit__toplam">{{ toplam | money }}</td>
-                </tr>
-              {%- endif -%}
-            {%- endif -%}
-          {%- endfor -%}
+          {% endfor %}
         </tbody>
       </table>
-
-      {%- if block.settings.dipnot != blank -%}
-        <p class="sk-taksit__dipnot">{{ block.settings.dipnot }}</p>
-      {%- endif -%}
     </div>
   {%- endif -%}
 {%- endif -%}
@@ -89,22 +71,11 @@
 
 {% schema %}
 {
-  "name": "Taksit tablosu",
+  "name": "Taksit Tablosu",
   "target": "section",
   "stylesheet": "convertflow.css",
   "javascript": "convertflow.js",
   "settings": [
-    {
-      "type": "header",
-      "content": "Taksit planı"
-    },
-    {
-      "type": "text",
-      "id": "taksit_plani",
-      "label": "Taksit planı",
-      "default": "3:0, 6:0, 9:4.5, 12:8",
-      "info": "Biçim: taksit:vade farkı yüzdesi. Örnek '3:0, 6:0, 9:4.5, 12:8' → 3 ve 6 taksit vade farksız, 9 taksitte %4.5, 12 taksitte %8 fark. Oranları bankanın POS sözleşmenden al."
-    },
     {
       "type": "text",
       "id": "baslik",
@@ -113,53 +84,62 @@
     },
     {
       "type": "text",
+      "id": "taksit_plani",
+      "label": "Taksit planı (vade sayıları, virgülle)",
+      "default": "3,6,9,12",
+      "info": "Örnek: 3,6,9,12"
+    },
+    {
+      "type": "number",
+      "id": "alt_limit",
+      "label": "Minimum fiyat (kuruş)",
+      "default": 10000,
+      "info": "Bu fiyatın altındaki ürünlerde taksit tablosu gösterilmez. 10000 = 100 ₺"
+    },
+    {
+      "type": "number",
+      "id": "min_taksit_tutari",
+      "label": "Minimum aylık taksit (kuruş)",
+      "default": 100,
+      "info": "Bu tutarın altındaki taksitler gösterilmez."
+    },
+    {
+      "type": "text",
       "id": "taksit_kelimesi",
       "label": "Taksit kelimesi",
-      "default": "Taksit"
+      "default": "taksit"
     },
     {
       "type": "text",
       "id": "vade_farksiz_etiketi",
       "label": "Vade farksız etiketi",
-      "default": "Vade farksız"
+      "default": "Vade farksız",
+      "info": "Aylık tutar × vade = ürün fiyatı ise bu etiket gösterilir."
     },
     {
-      "type": "header",
-      "content": "Görünme kuralları"
+      "type": "text",
+      "id": "sutun_taksit",
+      "label": "Taksit sütun başlığı",
+      "default": "Taksit"
     },
     {
-      "type": "number",
-      "id": "alt_limit",
-      "label": "Ürün fiyatı bu tutarın altındaysa gösterme (kuruş)",
-      "default": 50000,
-      "info": "50000 = 500 ₺. Shopify tutarları kuruş cinsinden tutar."
+      "type": "text",
+      "id": "sutun_aylik",
+      "label": "Aylık sütun başlığı",
+      "default": "Aylık"
     },
     {
-      "type": "number",
-      "id": "min_taksit_tutari",
-      "label": "Aylık taksit bu tutarın altına düşerse satırı gizle (kuruş)",
-      "default": 10000,
-      "info": "10000 = 100 ₺. Bankalar genelde çok küçük taksitlere izin vermez."
+      "type": "text",
+      "id": "sutun_toplam",
+      "label": "Toplam sütun başlığı",
+      "default": "Toplam"
     },
     {
-      "type": "header",
-      "content": "Tablo başlıkları"
-    },
-    { "type": "text", "id": "sutun_taksit", "label": "1. sütun", "default": "Taksit" },
-    { "type": "text", "id": "sutun_aylik", "label": "2. sütun", "default": "Aylık ödeme" },
-    { "type": "text", "id": "sutun_toplam", "label": "3. sütun", "default": "Toplam" },
-    {
-      "type": "textarea",
-      "id": "dipnot",
-      "label": "Dipnot",
-      "default": "Taksit seçenekleri kartınızın bankasına göre değişebilir. Kesin tutar ödeme adımında görünür."
-    },
-    {
-      "type": "header",
-      "content": "Görünüm"
-    },
-    { "type": "color", "id": "vurgu_rengi", "label": "Vurgu rengi", "default": "#1a7f5a" },
-    { "type": "color", "id": "kenarlik_rengi", "label": "Kenarlık rengi", "default": "#e3e3e3" }
+      "type": "color",
+      "id": "vurgu_rengi",
+      "label": "Vurgu rengi",
+      "default": "#4F46E5"
+    }
   ]
 }
 {% endschema %}
