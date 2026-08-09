@@ -22,14 +22,17 @@ export async function lisansYaz(session, aktifMi) {
 
     const shopRes = await client.request(SHOP_ID);
     const ownerId = shopRes?.data?.shop?.id;
-    if (!ownerId) return false;
+    if (!ownerId) {
+      console.warn("[ConvertFlow TR] Shop ID alinamadi.");
+      return false;
+    }
 
     const res = await client.request(METAFIELD_SET, {
       variables: {
         metafields: [
           {
             ownerId,
-            namespace: "$app:convertflow",
+            namespace: "convertflow",
             key: "aktif",
             type: "single_line_text_field",
             value: aktifMi ? "1" : "0",
