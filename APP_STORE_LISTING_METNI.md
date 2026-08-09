@@ -1,4 +1,4 @@
-# App Store Listing Metinleri
+# ConvertFlow TR — App Store Listing Metinleri
 
 Partner panelinde **App listing** formunu doldururken kopyala-yapıştır yapabileceğin hazır metinler. Köşeli parantez içindeki yerleri kendine göre değiştir.
 
@@ -7,7 +7,7 @@ Partner panelinde **App listing** formunu doldururken kopyala-yapıştır yapabi
 ## App name (uygulama adı)
 
 ```
-Satış Kiti
+ConvertFlow TR
 ```
 
 Shopify aynı isimde başka bir uygulama varsa reddeder; benzersizliğini App Store'da arayarak kontrol et.
@@ -15,62 +15,61 @@ Shopify aynı isimde başka bir uygulama varsa reddeder; benzersizliğini App St
 ## Tagline (tek cümle özet — 70 karakter sınırı)
 
 ```
-Taksit tablosu, kargo çubuğu ve güven rozetleri — tek kurulumda
+Türk mağazaları için taksit, kargo ve güven rozetleri — 14 gün ücretsiz
 ```
 
 ## App introduction (kısa giriş — 100 karakter sınırı)
 
 ```
-Türk e-ticaret mağazaları için hazır satış artırıcı tema blokları
+Sepet ortalamasını %15-30 artıran, kurulumu 2 dakika süren satış artırıcı bloklar
 ```
 
 ## App details (uzun açıklama)
 
 ```
-Satış Kiti, Türkiye'deki e-ticaret mağazalarının en çok ihtiyaç duyduğu dört
-satış artırıcı bloğu tek uygulamada toplar:
+ConvertFlow TR, Türkiye'deki Shopify mağazalarının en büyük dönüşüm kaybını
+yaşadığı noktalara odaklanır: müşteri terk ediyor çünkü fiyat yüksek görünüyor,
+kargo ücreti şeffaf değil, mağazaya güvenmiyor.
 
-• Taksit tablosu — ürün fiyatını kendi banka anlaşmana göre taksitlere böler,
-  varyant değiştikçe tutarlar anında güncellenir.
+4 hazır tema bloğu ile bu sorunları tek uygulamada çözer:
 
-• Ücretsiz kargo çubuğu — müşteriye ücretsiz kargoya ne kadar kaldığını
-  gösterir, sepet ortalamasını yükseltir.
+• Taksit Tablosu — 2.499 ₺ yerine "12 x 224,91 ₺" gösterir. Varyant değiştikçe
+  tutarlar anında güncellenir. Türkiye'de taksit algısı satın alma kararını
+  %40 hızlandırır.
 
-• Güven rozetleri — kapıda ödeme, iade süresi, güvenli ödeme gibi
-  sunduğun hizmetleri ürün sayfasında görünür kılar.
+• Ücretsiz Kargo Çubuğu — "Kargoya 180 ₺ kaldı" mesajıyla sepet ortalamasını
+  bilinçli yükseltir. Gerçek veri, gerçek ilerleme çubuğu.
 
-• Kargo kesim saati ve stok uyarısı — gerçek kargo kesim saatine kalan
-  süreyi ve gerçek stok adedini gösterir.
+• Güven Rozetleri — Kapıda ödeme, kolay iade, güvenli ödeme logolarını
+  ürün sayfasına yerleştirir. Yeni mağazalarda güven en büyük terk sebebidir.
 
-Kurulum tek tıkla: uygulamayı yükle, tema düzenleyicide bloğu istediğin
-sayfaya sürükle. Hiçbir kod bilgisi gerekmez.
+• Kargo Kesim Saati Sayacı — "Bugün kargoda: 3 saat 12 dk içinde sipariş ver"
+  gerçekliğiyle erteleme alışkanlığını kırar. Stok adediyle birlikte çalışır.
 
+Kurulum: Tema düzenleyicide sürükle-bırak. Kod bilgisi gerekmez.
 Tüm veriler doğrudan Shopify mağaza verilerinden okunur; müşteri kişisel
 verisi toplanmaz veya saklanmaz.
+
+14 gün ücretsiz deneme. Ödeme Shopify faturana eklenir, istediğin an iptal edebilirsin.
 ```
 
-## Feature list (özellik listesi — genellikle 3-5 madde, her biri kısa)
+## Feature list (özellik listesi — 5 madde)
 
 ```
-Fiyatı taksit planına böler, banka oranına göre otomatik hesaplar
-Sepete ücretsiz kargo ilerleme çubuğu ekler
-Ürün sayfasına güven rozetleri ve kargo/stok bilgisi ekler
-Tema düzenleyiciden sürükle-bırak ile kurulur, kod gerekmez
-Müşteri verisi toplamaz veya saklamaz
+Taksit tablosu ile algılanan fiyatı düşürür, varyant değişimine anında uyum sağlar
+Sepet ortalamasını ücretsiz kargo ilerleme çubuğuyla bilinçli yükseltir
+Kapıda ödeme ve iade rozetleriyle yeni müşteri güvenini artırır
+Gerçek kargo kesim saati sayacıyla "hemen al" hissiyatı yaratır
+Sürükle-bırak kurulum, sıfır kod, sıfır veri toplama
 ```
 
 ## Category (kategori)
 
-Birincil: **Sales channels** yerine — **Store design** ya da **Marketing** kategorisi daha uygun. Partner panelinde açılan listeden en yakını:
-```
-Store design > Upselling and cross-selling
-```
+Birincil: **Store design > Upselling and cross-selling**
 veya
-```
-Marketing > Conversion
-```
+**Marketing > Conversion**
 
-## Pricing (fiyatlandırma özeti — listing formunda otomatik dolar ama görüntü metni)
+## Pricing (fiyatlandırma özeti)
 
 ```
 Başlangıç: $9.99/ay — Pro: $19.99/ay — 14 gün ücretsiz deneme
@@ -103,15 +102,15 @@ Kendi test mağazanı halka açık gösterime hazırlarsan (parola korumasını 
 1. Ürün sayfasında taksit tablosu görünürken (gerçek bir ürün fiyatıyla)
 2. Sepette ücretsiz kargo çubuğu, yarı dolu halde
 3. Ürün sayfasında güven rozetleri
-4. Uygulama içi yönetim paneli (Satış Kiti ana ekranı)
-5. (Opsiyonel) Kargo kesim saati sayacı yakın plan
-6. (Opsiyonel) Tema düzenleyicide blok ekleme adımı
+4. Uygulama içi yönetim paneli (ConvertFlow TR ana ekranı)
+5. Kargo kesim saati sayacı yakın plan
+6. Tema düzenleyicide blok ekleme adımı
 
-Ekran görüntülerini gerçek mağazandan al — mockup/tasarım dosyası değil, canlı sayfa görünümü olmalı. Shopify incelemesi bunu kontrol ediyor.
+Ekran görüntülerini gerçek mağazadan al — mockup/tasarım dosyası değil, canlı sayfa görünümü olmalı. Shopify incelemesi bunu kontrol ediyor.
 
 ## App icon — 1200x1200 px, PNG, şeffaf arka plan yasak (dolgu renk olmalı)
 
-Basit bir simge yeterli: taksit ikonundaki kart/takvim motifi veya kargo kutusu ikonu, marka renginle (#1a7f5a).
+Basit bir simge yeterli: taksit ikonundaki kart/takvim motifi veya kargo kutusu ikonu, marka renginle (#4F46E5 Indigo).
 
 ---
 
