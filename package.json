@@ -1,22 +1,42 @@
 {
-  "name": "satiskiti",
+  "name": "convertflow-tr",
   "version": "1.0.0",
-  "description": "Satis Kiti - Turk e-ticaret magazalari icin taksit tablosu, kargo bari ve guven rozetleri",
-  "type": "module",
-  "engines": { "node": ">=20.0.0" },
+  "description": "Türk e-ticaret mağazaları için dönüşüm odaklı Shopify tema blokları — taksit, kargo, güven rozetleri",
+  "private": true,
   "scripts": {
-    "dev": "shopify app dev",
-    "build": "npm --prefix web install && npm --prefix web run build",
-    "deploy": "shopify app deploy",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "start": "node src/index.js"
   },
   "dependencies": {
-    "@shopify/shopify-api": "^11.6.0",
-    "@shopify/shopify-app-express": "^5.0.9",
-    "@shopify/shopify-app-session-storage-memory": "^4.0.9",
+    "@shopify/shopify-api": "^11.0.0",
+    "@shopify/shopify-app-express": "^5.0.0",
     "compression": "^1.7.4",
     "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "serve-static": "^1.16.2"
-  }
+    "express": "^4.19.2",
+    "serve-static": "^1.15.0"
+  },
+  "devDependencies": {
+    "@shopify/polaris": "^13.0.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^5.3.1"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "shopify",
+    "app",
+    "turkey",
+    "ecommerce",
+    "conversion",
+    "taksit",
+    "kargo",
+    "trust-badges"
+  ],
+  "author": "ConvertFlow TR",
+  "license": "MIT"
 }
