@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { shopifyApp } from "@shopify/shopify-app-express";
-import { LATEST_API_VERSION } from "@shopify/shopify-api";
-import { MemorySessionStorage } from "@shopify/shopify-app-session-storage-memory";
+import { ApiVersion } from "@shopify/shopify-api";
 import { billingConfig } from "./plans.js";
+import { oturumDeposu } from "./depo.js";
 
 const hostName = (process.env.HOST || "").replace(/^https?:\/\//, "").replace(/\/$/, "");
 
@@ -16,7 +16,10 @@ const shopify = shopifyApp({
     apiKey: process.env.SHOPIFY_API_KEY,
     apiSecretKey: process.env.SHOPIFY_API_SECRET,
     scopes: ["read_products", "write_products"],
-    apiVersion: LATEST_API_VERSION,
+    // LATEST_API_VERSION yerine sabit surum: kutuphane guncellendiginde API
+    // surumu kendiliginden atlarsa shopify.app.toml'daki webhook surumuyle
+    // ayrisiyor ve webhook yuklerinin bicimi sessizce degisebiliyor.
+    apiVersion: ApiVersion.October25,
     hostName,
     hostScheme: "https",
     isEmbeddedApp: true,
@@ -24,7 +27,16 @@ const shopify = shopifyApp({
   },
   auth: { path: "/api/auth", callbackPath: "/api/auth/callback" },
   webhooks: { path: "/api/webhooks" },
-  sessionStorage: new MemorySessionStorage(),
+  sessionStorage: oturumDeposu(),
+  future: {
+    // Suresiz offline belirtecler Admin API tarafindan artik kabul edilmiyor.
+    // Bu bayrak acikken kurulumda suresi dolan belirtec alinir ve suresi
+    // dolmadan once otomatik yenilenir.
+    expiringOfflineAccessTokens: true,
+    // Yonetilen kurulum (managed installation) uygulamada zaten acik; gomulu
+    // istekler OAuth yonlendirmesi yerine belirtec takasiyla yetkilendirilir.
+    tokenExchange: true,
+  },
 });
 
 export default shopify;

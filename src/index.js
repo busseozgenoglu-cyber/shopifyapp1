@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 import shopify from "./shopify.js";
 import webhookHandlers from "./webhooks.js";
 import { lisansYaz } from "./lisans.js";
+import { belirtecAraKatmani } from "./oturum.js";
 import { PLANS, PLAN_DETAILS, NAME_TO_KEY, KEY_TO_NAME } from "./plans.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -52,7 +53,12 @@ app.get(shopify.config.auth.callbackPath, shopify.auth.callback());
 app.post(shopify.config.webhooks.path, shopify.processWebhooks({ webhookHandlers }));
 
 /* ---------- Korumali API ---------- */
-app.use("/api/*", shopify.validateAuthenticatedSession());
+// Express 5'te yol desenlerinde ciplak `*` gecersiz (path-to-regexp v8).
+// `app.use("/api", ...)` zaten /api ile baslayan tum yollari kapsiyor ve
+// yukarida tanimlanan auth/webhook yollarindan sonra geldigi icin onlari
+// etkilemiyor.
+app.use("/api", shopify.validateAuthenticatedSession());
+app.use("/api", belirtecAraKatmani());
 app.use(express.json({ limit: "256kb" }));
 
 app.get("/api/magaza", async (_req, res) => {
@@ -99,7 +105,7 @@ app.post("/api/lisans", async (req, res) => {
 });
 
 /* ---------- Global Hata ---------- */
-app.use("/api/*", (err, _req, res, _next) => {
+app.use("/api", (err, _req, res, _next) => {
   console.error(`[CF] API error: ${err.message}`);
   res.status(500).json({ error: "Beklenmeyen hata." });
 });
@@ -108,7 +114,8 @@ app.use("/api/*", (err, _req, res, _next) => {
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIK, { index: false }));
 
-app.use("/*", shopify.ensureInstalledOnShop(), (_req, res) => {
+// Yolsuz `app.use`: geriye kalan tum istekleri karsilar (Express 5 uyumlu).
+app.use(shopify.ensureInstalledOnShop(), (_req, res) => {
   const dosya = join(STATIK, "index.html");
   if (!existsSync(dosya)) return res.status(500).send("Panel derlenmemiş.");
   res.status(200).set("Content-Type", "text/html").send(readFileSync(dosya));

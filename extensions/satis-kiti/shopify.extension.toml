@@ -2,5 +2,8 @@ api_version = "2025-10"
 
 [[extensions]]
 type = "theme"
-name = "ConvertFlow TR"
+# Tema editöründe blokların altında görünen ad; uygulama adıyla aynı olmalı.
+name = "Satış Kiti"
+# handle DEĞİŞTİRİLMEMELİ: değişirse Shopify uzantıyı yenisi sayar ve kurulu
+# mağazalardaki mevcut blok yerleşimleri kaybolur.
 handle = "convertflow-tr"

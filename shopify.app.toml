@@ -1,42 +1,57 @@
-# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+# Satış Kiti — Shopify App yapılandırması
+# Değerler Dev Dashboard'daki etkin sürümle (satis-kiti-5) birebir aynıdır.
 
-client_id = "BURAYA_CLIENT_ID_GIR"
-name = "ConvertFlow TR"
-handle = "convertflow-tr"
-application_url = "https://BURAYA_ADRES_GIR.up.railway.app"
+client_id = "273f7ed2240241dab0ebf935ff2d77c0"
+# App Store listesinde ve mağaza yöneticisinde görünen adla aynı olmalı.
+# Depo eskiden "ConvertFlow TR" diyordu, uygulamanın gerçek adı ise
+# "Satış Kiti": ad uyuşmazlığı incelemede ret sebebi.
+name = "Satış Kiti"
+handle = "satis-kiti"
+application_url = "https://shopifyapp1-production.up.railway.app"
 embedded = true
 
 [build]
 include_config_on_deploy = true
 
+[access_scopes]
+# read_products  -> ürün/varyant fiyatını okuyup taksit tablosunu kurar
+# write_products -> lisans durumunu app metafield'ına yazar (bloklar bunu okur)
+scopes = "read_products,write_products"
+
 [auth]
 redirect_urls = [
-  "https://BURAYA_ADRES_GIR.up.railway.app/api/auth/callback"
+  "https://shopifyapp1-production.up.railway.app/api/auth/callback"
 ]
 
 [webhooks]
-api_version = "2024-10"
+# Sunucudaki apiVersion (src/shopify.js) ile aynı tutulmalı; ayrışırsa
+# webhook yükünün biçimi sessizce değişebilir.
+api_version = "2025-10"
 
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled" ]
   uri = "/api/webhooks"
 
+  # --- Shopify'ın zorunlu tuttuğu uyum (KVKK/GDPR) webhook'ları ---
+  # Bunlar `topics` DEĞİL `compliance_topics` altında tanımlanır. Yanlış
+  # anahtarla yazıldığında deploy reddediliyor ve hata mesajı korumalı
+  # müşteri verisi onayı eksikmiş gibi okunuyor; oysa sebep anahtarın
+  # kendisi. Uyum webhook'ları ayrı bir kapsam gerektirmez.
   [[webhooks.subscriptions]]
-  topics = [ "customers/data_request" ]
+  compliance_topics = [ "customers/data_request" ]
   uri = "/api/webhooks"
 
   [[webhooks.subscriptions]]
-  topics = [ "customers/redact" ]
+  compliance_topics = [ "customers/redact" ]
   uri = "/api/webhooks"
 
   [[webhooks.subscriptions]]
-  topics = [ "shop/redact" ]
+  compliance_topics = [ "shop/redact" ]
   uri = "/api/webhooks"
 
-[app_proxy]
-url = "https://BURAYA_ADRES_GIR.up.railway.app"
-subpath = "convertflow"
-prefix = "apps"
+# app_proxy tanımı kaldırıldı: sunucuda proxy yolu yok ve tema blokları
+# yalnızca /cart.js ile konuşuyor. Kullanılmayan bir proxy, incelemede
+# "ne işe yarıyor" sorusunu doğuruyor.
 
 [pos]
 embedded = false

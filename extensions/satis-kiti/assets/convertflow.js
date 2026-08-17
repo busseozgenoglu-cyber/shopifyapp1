@@ -209,6 +209,19 @@
       const mesajAktif = sayac.dataset.mesajAktif || '';
       const mesajBitti = sayac.dataset.mesajBitti || '';
 
+      // Rakam her saniye yeniden yazilirsa animasyon tetiklenmez ve sayac
+      // olu gorunur. Yalnizca deger degistiginde yazip data-flip ekliyoruz;
+      // ayni kare icinde kaldirip tekrar eklemek animasyonu bastan baslatir.
+      function yaz(el, deger) {
+        if (!el) return;
+        const metin = String(deger).padStart(2, '0');
+        if (el.textContent === metin) return;
+        el.textContent = metin;
+        el.removeAttribute('data-flip');
+        void el.offsetWidth;
+        el.setAttribute('data-flip', '');
+      }
+
       const elGun = sayac.querySelector('[data-cf-gun]');
       const elSaat = sayac.querySelector('[data-cf-saat]');
       const elDakika = sayac.querySelector('[data-cf-dakika]');
@@ -244,17 +257,18 @@
         const dakika = Math.floor((kalan % (1000 * 60 * 60)) / (1000 * 60));
         const saniye = Math.floor((kalan % (1000 * 60)) / 1000);
 
-        elGun.textContent = String(gun).padStart(2, '0');
-        elSaat.textContent = String(saat).padStart(2, '0');
-        elDakika.textContent = String(dakika).padStart(2, '0');
-        elSaniye.textContent = String(saniye).padStart(2, '0');
+        yaz(elGun, gun);
+        yaz(elSaat, saat);
+        yaz(elDakika, dakika);
+        yaz(elSaniye, saniye);
 
         if (elMesaj && mesajAktif) elMesaj.textContent = mesajAktif;
 
         // Urgency effect when less than 1 hour
         if (kalan < 1000 * 60 * 60) {
-          sayac.style.borderColor = '#ef4444';
-          sayac.style.boxShadow = '0 0 20px rgba(220,38,38,0.15)';
+          sayac.setAttribute('data-acil', '');
+          const kart = sayac.closest('.cf-indirim');
+          if (kart) kart.setAttribute('data-acil', '');
         }
       }
 
