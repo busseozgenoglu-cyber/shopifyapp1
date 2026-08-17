@@ -1,12 +1,10 @@
-/* ============================================================
-   CONVERTFLOW TR — Mükemmel Satış Artırıcı Blok Motoru
-   Intersection Observer + Smooth Animasyon + Confetti
-   ============================================================ */
+/* Satis Kiti — tema bloklari motoru.
+   Shopify tema uzantilarinda blok basina JS 10 KB ile sinirli: bu dosya o
+   esigin altinda kalmali, yoksa deploy performans hatasi veriyor. */
 
 (function () {
   'use strict';
 
-  /* ---------- UTILITIES ---------- */
   function debounce(fn, ms) {
     let t;
     return function () {
@@ -20,55 +18,48 @@
     return format.replace(/\{\{\s*amount\s*\}\}/g, (tutar / 100).toFixed(2).replace('.', ','));
   }
 
-  /* ---------- INTERSECTION OBSERVER (Animasyon trigger) ---------- */
+  // Bloklar gorunur alana girdiginde giris animasyonu tetiklenir.
   function baslatGozlemci() {
     if (!window.IntersectionObserver) return;
-    const gozlemci = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('cf-gorunur');
-          gozlemci.unobserve(entry.target);
-        }
+    const gozlemci = new IntersectionObserver(function (girisler) {
+      girisler.forEach(function (giris) {
+        if (!giris.isIntersecting) return;
+        giris.target.classList.add('cf-gorunur');
+        gozlemci.unobserve(giris.target);
       });
     }, { threshold: 0.15 });
 
-    document.querySelectorAll('.cf-taksit, .cf-kargo, .cf-rozetler, .cf-aciliyet, .cf-indirim').forEach(function (el) {
-      gozlemci.observe(el);
-    });
+    document.querySelectorAll('.cf-taksit, .cf-kargo, .cf-rozetler, .cf-aciliyet, .cf-indirim')
+      .forEach(function (el) { gozlemci.observe(el); });
   }
 
-  /* ---------- CONFETTI MOTORU ---------- */
+  // Parca sayisi bilerek dusuk: her parca mobilde ayri bir DOM dugumu.
   function confettiPatlat(x, y, renkler) {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     renkler = renkler || ['#4F46E5', '#EC4899', '#10B981', '#F59E0B', '#DC2626', '#06B6D4'];
-    const container = document.createElement('div');
-    container.className = 'cf-confetti';
-    document.body.appendChild(container);
+    const kap = document.createElement('div');
+    kap.className = 'cf-confetti';
 
-    for (let i = 0; i < 40; i++) {
-      const parca = document.createElement('div');
-      parca.className = 'cf-confetti-parca';
-      parca.style.left = (x + (Math.random() - 0.5) * 200) + 'px';
-      parca.style.top = (y + (Math.random() - 0.5) * 100) + 'px';
-      parca.style.background = renkler[Math.floor(Math.random() * renkler.length)];
-      parca.style.width = (4 + Math.random() * 8) + 'px';
-      parca.style.height = (4 + Math.random() * 8) + 'px';
-      parca.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      parca.style.animationDuration = (2 + Math.random() * 2) + 's';
-      parca.style.animationDelay = (Math.random() * 0.5) + 's';
-      container.appendChild(parca);
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      const boy = (4 + Math.random() * 8).toFixed(1);
+      p.className = 'cf-confetti-parca';
+      p.style.cssText = 'left:' + (x + (Math.random() - 0.5) * 200) + 'px;top:' +
+        (y + (Math.random() - 0.5) * 100) + 'px;width:' + boy + 'px;height:' + boy +
+        'px;background:' + renkler[Math.floor(Math.random() * renkler.length)] +
+        ';border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') +
+        ';animation-duration:' + (2 + Math.random() * 2).toFixed(1) + 's;animation-delay:' +
+        (Math.random() * 0.5).toFixed(2) + 's';
+      kap.appendChild(p);
     }
 
-    setTimeout(function () { container.remove(); }, 4500);
+    document.body.appendChild(kap);
+    setTimeout(function () { kap.remove(); }, 4500);
   }
 
-  /* ============================================================
-     TAKSIT TABLOSU
-     ============================================================ */
+  /* ---------- Taksit tablosu ---------- */
   function baslatTaksit() {
-    const tablolar = document.querySelectorAll('[data-sk-taksit]');
-    if (!tablolar.length) return;
-
-    tablolar.forEach(function (tablo) {
+    document.querySelectorAll('[data-sk-taksit]').forEach(function (tablo) {
       const plan = tablo.dataset.plan;
       const fiyat = parseInt(tablo.dataset.fiyat, 10);
       const altLimit = parseInt(tablo.dataset.altLimit, 10) || 0;
@@ -79,35 +70,26 @@
       const govde = tablo.querySelector('[data-sk-taksit-govde]');
       if (!govde || !plan || !fiyat || fiyat < altLimit) return;
 
-      const satirlar = plan.split(',').map(function (s) { return parseInt(s.trim(), 10); }).filter(Boolean);
       let html = '';
-
-      satirlar.forEach(function (vade, i) {
-        const aylik = Math.ceil(fiyat / vade);
-        if (aylik < minTaksit) return;
-        const toplam = aylik * vade;
-        const fark = toplam - fiyat;
-        const etiket = fark <= 0 && vadeEtiketi ? '<span class="cf-taksit__vade-etiket">' + vadeEtiketi + '</span>' : '';
-
-        html += '<tr style="animation-delay:' + (i * 0.08) + 's">' +
-          '<td>' + vade + ' ' + taksitKelimesi + etiket + '</td>' +
-          '<td><strong>' + formatPara(aylik, paraFormati) + '</strong></td>' +
-          '<td>' + formatPara(toplam, paraFormati) + '</td>' +
-          '</tr>';
-      });
+      plan.split(',').map(function (s) { return parseInt(s.trim(), 10); }).filter(Boolean)
+        .forEach(function (vade, i) {
+          const aylik = Math.ceil(fiyat / vade);
+          if (aylik < minTaksit) return;
+          const toplam = aylik * vade;
+          const etiket = toplam - fiyat <= 0 && vadeEtiketi
+            ? '<span class="cf-taksit__vade-etiket">' + vadeEtiketi + '</span>' : '';
+          html += '<tr style="animation-delay:' + (i * 0.08) + 's"><td>' + vade + ' ' +
+            taksitKelimesi + etiket + '</td><td><strong>' + formatPara(aylik, paraFormati) +
+            '</strong></td><td>' + formatPara(toplam, paraFormati) + '</td></tr>';
+        });
 
       govde.innerHTML = html;
     });
   }
 
-  /* ============================================================
-     KARGO BARİ
-     ============================================================ */
+  /* ---------- Ucretsiz kargo ilerleme cubugu ---------- */
   function baslatKargo() {
-    const barlar = document.querySelectorAll('[data-sk-kargo]');
-    if (!barlar.length) return;
-
-    barlar.forEach(function (bar) {
+    document.querySelectorAll('[data-sk-kargo]').forEach(function (bar) {
       const esik = parseInt(bar.dataset.esik, 10);
       const mesajDevam = bar.dataset.mesajDevam;
       const mesajTamam = bar.dataset.mesajTamam;
@@ -118,10 +100,10 @@
       if (!esik || !mesajEl || !dolguEl) return;
 
       function guncelle() {
-        fetch('/cart.js', { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+        fetch('/cart.js', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
           .then(function (r) { return r.json(); })
-          .then(function (cart) {
-            const toplam = cart.total_price;
+          .then(function (sepet) {
+            const toplam = sepet.total_price;
             const kalan = Math.max(0, esik - toplam);
             const yuzde = esik > 0 ? Math.min(100, Math.round((toplam / esik) * 100)) : 0;
 
@@ -130,11 +112,11 @@
             } else {
               mesajEl.textContent = mesajTamam;
               mesajEl.classList.add('cf-kargo__tamam');
-              // Confetti when free shipping reached!
-              if (!bar.dataset.celebrated) {
-                bar.dataset.celebrated = '1';
-                const rect = bar.getBoundingClientRect();
-                confettiPatlat(rect.left + rect.width / 2, rect.top, ['#10B981', '#34D399', '#6EE7B7', '#059669']);
+              if (!bar.dataset.kutlandi) {
+                bar.dataset.kutlandi = '1';
+                const kutu = bar.getBoundingClientRect();
+                confettiPatlat(kutu.left + kutu.width / 2, kutu.top,
+                  ['#10B981', '#34D399', '#6EE7B7', '#059669']);
               }
             }
 
@@ -148,19 +130,15 @@
       }
 
       guncelle();
-      document.addEventListener('cart:updated', debounce(guncelle, 300));
-      document.addEventListener('cart:refresh', debounce(guncelle, 300));
+      const gecikmeli = debounce(guncelle, 300);
+      document.addEventListener('cart:updated', gecikmeli);
+      document.addEventListener('cart:refresh', gecikmeli);
     });
   }
 
-  /* ============================================================
-     KARGO SURESI SAYACI
-     ============================================================ */
+  /* ---------- Kargo kesim saati ---------- */
   function baslatKargoSuresi() {
-    const sayaclar = document.querySelectorAll('[data-sk-aciliyet]');
-    if (!sayaclar.length) return;
-
-    sayaclar.forEach(function (sayac) {
+    document.querySelectorAll('[data-sk-aciliyet]').forEach(function (sayac) {
       const kesimSaati = sayac.dataset.kesimSaati;
       const mesaj = sayac.dataset.mesaj;
       const sonMesaj = sayac.dataset.sonMesaj;
@@ -171,22 +149,22 @@
 
       function guncelle() {
         const simdi = new Date();
-        const bugunKesim = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate(), saat, dakika, 0);
-        if (bugunKesim < simdi) bugunKesim.setDate(bugunKesim.getDate() + 1);
+        const kesim = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate(), saat, dakika, 0);
+        if (kesim < simdi) kesim.setDate(kesim.getDate() + 1);
 
-        const kalan = bugunKesim - simdi;
-        const kSaat = Math.floor(kalan / (1000 * 60 * 60));
-        const kDakika = Math.floor((kalan % (1000 * 60 * 60)) / (1000 * 60));
-
+        const kalan = kesim - simdi;
         if (kalan <= 0) {
           mesajEl.textContent = sonMesaj || 'Bugünkü kargo kesim saati doldu. Yarın kargolanacak.';
           mesajEl.style.opacity = '0.6';
-        } else {
-          mesajEl.textContent = mesaj
-            .replace('[saat]', kSaat)
-            .replace('[dakika]', kDakika)
-            .replace('[sure]', kSaat + ' saat ' + kDakika + ' dakika');
+          return;
         }
+
+        const kSaat = Math.floor(kalan / 3600000);
+        const kDakika = Math.floor((kalan % 3600000) / 60000);
+        mesajEl.textContent = mesaj
+          .replace('[saat]', kSaat)
+          .replace('[dakika]', kDakika)
+          .replace('[sure]', kSaat + ' saat ' + kDakika + ' dakika');
       }
 
       guncelle();
@@ -194,14 +172,9 @@
     });
   }
 
-  /* ============================================================
-     INDIRIM SAYACI
-     ============================================================ */
+  /* ---------- Indirim geri sayimi ---------- */
   function baslatIndirimSayaclari() {
-    const sayaclar = document.querySelectorAll('[data-cf-indirim]');
-    if (!sayaclar.length) return;
-
-    sayaclar.forEach(function (sayac) {
+    document.querySelectorAll('[data-cf-indirim]').forEach(function (sayac) {
       const bitisStr = sayac.dataset.bitis;
       if (!bitisStr) return;
 
@@ -209,11 +182,17 @@
       const mesajAktif = sayac.dataset.mesajAktif || '';
       const mesajBitti = sayac.dataset.mesajBitti || '';
 
-      // Rakam her saniye yeniden yazilirsa animasyon tetiklenmez ve sayac
-      // olu gorunur. Yalnizca deger degistiginde yazip data-flip ekliyoruz;
-      // ayni kare icinde kaldirip tekrar eklemek animasyonu bastan baslatir.
+      const elGun = sayac.querySelector('[data-cf-gun]');
+      const elSaat = sayac.querySelector('[data-cf-saat]');
+      const elDakika = sayac.querySelector('[data-cf-dakika]');
+      const elSaniye = sayac.querySelector('[data-cf-saniye]');
+      const elMesaj = sayac.querySelector('[data-cf-indirim-mesaj]');
+      if (!elGun || !elSaat || !elDakika || !elSaniye) return;
+
+      // Rakam her saniye yeniden yazilirsa animasyon tetiklenmez, sayac olu
+      // gorunur. Yalnizca deger degisince yaziyoruz; ozniteligi ayni karede
+      // kaldirip tekrar eklemek animasyonu bastan baslatir.
       function yaz(el, deger) {
-        if (!el) return;
         const metin = String(deger).padStart(2, '0');
         if (el.textContent === metin) return;
         el.textContent = metin;
@@ -222,50 +201,33 @@
         el.setAttribute('data-flip', '');
       }
 
-      const elGun = sayac.querySelector('[data-cf-gun]');
-      const elSaat = sayac.querySelector('[data-cf-saat]');
-      const elDakika = sayac.querySelector('[data-cf-dakika]');
-      const elSaniye = sayac.querySelector('[data-cf-saniye]');
-      const elMesaj = sayac.querySelector('[data-cf-indirim-mesaj]');
-
-      if (!elGun || !elSaat || !elDakika || !elSaniye) return;
-
-      let confettiAtildi = false;
+      let kutlandi = false;
 
       function guncelle() {
-        const simdi = new Date();
-        const kalan = bitis - simdi;
+        const kalan = bitis - new Date();
 
         if (kalan <= 0) {
-          elGun.textContent = '00';
-          elSaat.textContent = '00';
-          elDakika.textContent = '00';
-          elSaniye.textContent = '00';
+          [elGun, elSaat, elDakika, elSaniye].forEach(function (el) { el.textContent = '00'; });
           if (elMesaj && mesajBitti) elMesaj.textContent = mesajBitti;
           sayac.style.opacity = '0.6';
-
-          if (!confettiAtildi) {
-            confettiAtildi = true;
-            const rect = sayac.getBoundingClientRect();
-            confettiPatlat(rect.left + rect.width / 2, rect.top, ['#DC2626', '#F97316', '#FBBF24', '#EF4444']);
+          if (!kutlandi) {
+            kutlandi = true;
+            const kutu = sayac.getBoundingClientRect();
+            confettiPatlat(kutu.left + kutu.width / 2, kutu.top,
+              ['#DC2626', '#F97316', '#FBBF24', '#EF4444']);
           }
           return;
         }
 
-        const gun = Math.floor(kalan / (1000 * 60 * 60 * 24));
-        const saat = Math.floor((kalan % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const dakika = Math.floor((kalan % (1000 * 60 * 60)) / (1000 * 60));
-        const saniye = Math.floor((kalan % (1000 * 60)) / 1000);
-
-        yaz(elGun, gun);
-        yaz(elSaat, saat);
-        yaz(elDakika, dakika);
-        yaz(elSaniye, saniye);
+        yaz(elGun, Math.floor(kalan / 86400000));
+        yaz(elSaat, Math.floor((kalan % 86400000) / 3600000));
+        yaz(elDakika, Math.floor((kalan % 3600000) / 60000));
+        yaz(elSaniye, Math.floor((kalan % 60000) / 1000));
 
         if (elMesaj && mesajAktif) elMesaj.textContent = mesajAktif;
 
-        // Urgency effect when less than 1 hour
-        if (kalan < 1000 * 60 * 60) {
+        // Son bir saatte panel ve sayac aciliyet gorunumune geciyor.
+        if (kalan < 3600000) {
           sayac.setAttribute('data-acil', '');
           const kart = sayac.closest('.cf-indirim');
           if (kart) kart.setAttribute('data-acil', '');
@@ -277,9 +239,6 @@
     });
   }
 
-  /* ============================================================
-     INIT
-     ============================================================ */
   function init() {
     baslatTaksit();
     baslatKargo();

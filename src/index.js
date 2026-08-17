@@ -16,7 +16,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const STATIK = join(__dirname, "..", "web", "dist");
 const PORT = parseInt(process.env.PORT || "3000", 10);
 const TEST_MODU = process.env.NODE_ENV !== "production";
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.2.0";
 
 const app = express();
 app.set("trust proxy", 1);

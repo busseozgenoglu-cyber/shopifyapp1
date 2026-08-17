@@ -4,6 +4,9 @@ api_version = "2025-10"
 type = "theme"
 # Tema editöründe blokların altında görünen ad; uygulama adıyla aynı olmalı.
 name = "Satış Kiti"
-# handle DEĞİŞTİRİLMEMELİ: değişirse Shopify uzantıyı yenisi sayar ve kurulu
-# mağazalardaki mevcut blok yerleşimleri kaybolur.
-handle = "convertflow-tr"
+# handle ve uid, yayındaki uzantıyla birebir aynı olmalı. Depoda "convertflow-tr"
+# yazıyordu ama yayındaki uzantının tanıtıcısı "satis-kiti"; bu haliyle deploy
+# edilseydi Shopify bunu yeni bir uzantı sayıp mevcut olanı silecek ve kurulu
+# mağazalardaki blok yerleşimleri kaybolacaktı. DEĞİŞTİRMEYİN.
+handle = "satis-kiti"
+uid = "60e39a46-d86b-4a5c-ce8f-843f296dcaa5310edb33"
