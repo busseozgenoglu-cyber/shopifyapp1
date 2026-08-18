@@ -7,7 +7,7 @@ client_id = "273f7ed2240241dab0ebf935ff2d77c0"
 # "Satış Kiti": ad uyuşmazlığı incelemede ret sebebi.
 name = "Satış Kiti"
 handle = "satis-kiti"
-application_url = "https://shopifyapp1-production.up.railway.app"
+application_url = "https://satis-kiti-production.up.railway.app"
 embedded = true
 
 [build]
@@ -19,7 +19,7 @@ scopes = "read_products,write_products"
 
 [auth]
 redirect_urls = [
-  "https://shopifyapp1-production.up.railway.app/api/auth/callback"
+  "https://satis-kiti-production.up.railway.app/api/auth/callback"
 ]
 
 [webhooks]
