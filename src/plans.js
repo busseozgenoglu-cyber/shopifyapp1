@@ -1,5 +1,17 @@
 import { BillingInterval } from "@shopify/shopify-api";
 
+/**
+ * Fiyatlandırma, App Store'daki doğrudan rakiplerin altında konumlandırıldı:
+ * Urgency+ Low Stock Counter 2,99 $, Pro+ Low Stock & Timer Banner 3,99 $,
+ * Urgify – Urgency Suite 7,99 $ (üst paketi 19,99 $). Satış Kiti bu apların
+ * sunduğu geri sayım ve stok aciliyetine ek olarak taksit tablosu, kargo
+ * çubuğu ve güven rozetlerini de veriyor; yine de yeni bir uygulama olduğu
+ * için fiyatla rekabet ediyor.
+ *
+ * Buradaki `price` değerleri panelde gösterilir, `billingConfig.amount`
+ * Shopify'a bildirilir. İkisinin ayrışması yanıltıcı fiyatlandırma sayılır,
+ * bu yüzden tests/plans.test.js ikisini karşılaştırıyor.
+ */
 export const PLANS = {
   BASLANGIC: "Başlangıç",
   PRO: "Pro",
@@ -9,7 +21,7 @@ export const PLAN_DETAILS = [
   {
     key: "baslangic",
     name: PLANS.BASLANGIC,
-    price: 9.99,
+    price: 2.49,
     features: [
       "Taksit tablosu (varyant uyumlu)",
       "Ücretsiz kargo ilerleme çubuğu",
@@ -21,7 +33,7 @@ export const PLAN_DETAILS = [
   {
     key: "pro",
     name: PLANS.PRO,
-    price: 19.99,
+    price: 5.99,
     features: [
       "Başlangıç paketindeki her şey",
       "Kargo kesim saati sayacı",
@@ -35,13 +47,13 @@ export const PLAN_DETAILS = [
 
 export const billingConfig = {
   [PLANS.BASLANGIC]: {
-    amount: 9.99,
+    amount: 2.49,
     currencyCode: "USD",
     interval: BillingInterval.Every30Days,
     trialDays: 14,
   },
   [PLANS.PRO]: {
-    amount: 19.99,
+    amount: 5.99,
     currencyCode: "USD",
     interval: BillingInterval.Every30Days,
     trialDays: 14,

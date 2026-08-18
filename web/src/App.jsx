@@ -223,10 +223,13 @@ export default function App() {
   const tamamlananAdim = kurulumAdimlari.filter((a) => a.tamam).length;
   const ilerlemeYuzde = Math.round((tamamlananAdim / kurulumAdimlari.length) * 100);
 
+  // `icon` verildiğinde Polaris sekme metnini gizleyip yalnızca simgeyi
+  // çiziyordu; sekmelerin hangisi olduğu anlaşılmıyordu. Metin tek başına
+  // yeterli, simgeler zaten emoji olarak içerikte.
   const sekmeler = [
-    { id: "kurulum", content: "🚀 Kurulum", icon: ICONS.chevron },
-    { id: "bloklar", content: "🎨 Bloklar", icon: ICONS.settings },
-    { id: "paketler", content: "💎 Paketler", icon: ICONS.chart },
+    { id: "kurulum", content: "🚀 Kurulum", panelID: "panel-kurulum" },
+    { id: "bloklar", content: "🎨 Bloklar", panelID: "panel-bloklar" },
+    { id: "paketler", content: "💎 Paketler", panelID: "panel-paketler" },
   ];
 
   if (yukleniyor) {
