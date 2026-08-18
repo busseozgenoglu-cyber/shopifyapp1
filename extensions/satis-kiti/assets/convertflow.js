@@ -1,4 +1,4 @@
-/* Satis Kiti. Blok basina JS 10 KB sinirli. */
+/* Satis Kiti — 10 KB JS siniri. */
 
 (function () {
   'use strict';
@@ -32,7 +32,7 @@
 
   function confettiPatlat(x, y, renkler) {
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    renkler = renkler || ['#4F46E5', '#EC4899', '#10B981', '#F59E0B', '#DC2626', '#06B6D4'];
+    renkler = renkler || ['#4F46E5', '#EC4899', '#10B981', '#F59E0B'];
     const kap = document.createElement('div');
     kap.className = 'cf-confetti';
 
@@ -53,7 +53,7 @@
     setTimeout(function () { kap.remove(); }, 4500);
   }
 
-  // Dawn temalari DOM olayi yayinlamaz; cart fetch'lerini yakalayip olay basiyoruz.
+  // Dawn DOM olayi yaymaz; cart fetch'ini yakala, olay bas.
   const SEPET_OLAYI = 'sk:sepet-degisti';
   function sepetYamasiKur() {
     if (window.__skSepetYamali || !window.fetch) return;
@@ -72,6 +72,7 @@
   function baslatTaksit() {
     document.querySelectorAll('[data-sk-taksit]').forEach(function (tablo) {
       const plan = tablo.dataset.plan;
+      const oranlar = (tablo.dataset.oranlar || '').split(',').map(function (s) { return parseFloat(s.trim()) || 0; });
       const fiyat = parseInt(tablo.dataset.fiyat, 10);
       const altLimit = parseInt(tablo.dataset.altLimit, 10) || 0;
       const minTaksit = parseInt(tablo.dataset.minTaksitTutari, 10) || 100;
@@ -84,10 +85,11 @@
       let html = '';
       plan.split(',').map(function (s) { return parseInt(s.trim(), 10); }).filter(Boolean)
         .forEach(function (vade, i) {
-          const aylik = Math.ceil(fiyat / vade);
+          const oran = oranlar[i] || 0;
+          const aylik = Math.ceil((fiyat + fiyat * oran / 100) / vade);
           if (aylik < minTaksit) return;
           const toplam = aylik * vade;
-          const etiket = toplam - fiyat <= 0 && vadeEtiketi
+          const etiket = oran <= 0 && vadeEtiketi
             ? '<span class="cf-taksit__vade-etiket">' + vadeEtiketi + '</span>' : '';
           html += '<tr style="animation-delay:' + (i * 0.08) + 's"><td>' + vade + ' ' +
             taksitKelimesi + etiket + '</td><td><strong>' + formatPara(aylik, paraFormati) +
@@ -120,15 +122,13 @@
 
             if (kalan > 0) {
               mesajEl.textContent = mesajDevam.replace('[tutar]', formatPara(kalan, paraFormati));
-              mesajEl.classList.remove('cf-kargo__tamam'); delete bar.dataset.kutlandi;
             } else {
               mesajEl.textContent = mesajTamam;
               mesajEl.classList.add('cf-kargo__tamam');
               if (!bar.dataset.kutlandi) {
                 bar.dataset.kutlandi = '1';
                 const kutu = bar.getBoundingClientRect();
-                confettiPatlat(kutu.left + kutu.width / 2, kutu.top,
-                  ['#10B981', '#34D399', '#6EE7B7', '#059669']);
+                confettiPatlat(kutu.left + kutu.width / 2, kutu.top, ['#10B981', '#34D399', '#059669']);
               }
             }
 
@@ -221,8 +221,7 @@
           if (!kutlandi) {
             kutlandi = true;
             const kutu = sayac.getBoundingClientRect();
-            confettiPatlat(kutu.left + kutu.width / 2, kutu.top,
-              ['#DC2626', '#F97316', '#FBBF24', '#EF4444']);
+            confettiPatlat(kutu.left + kutu.width / 2, kutu.top, ['#DC2626', '#F97316', '#EF4444']);
           }
           return;
         }

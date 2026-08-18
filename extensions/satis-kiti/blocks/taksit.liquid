@@ -1,7 +1,8 @@
 {%- comment -%}
   Satış Kiti — Taksit Tablosu
-  Urun fiyatini taksit planina boler. Varyant degisince tutar aninda guncellenir.
-  Hicbir dis servise baglanmaz. Tum veri Shopify'in kendi nesnelerinden gelir.
+  Urun fiyatini taksit planina boler; her vade icin ayri ek oran (faiz)
+  tanimlanabilir. Varyant degisince tutar aninda guncellenir. Hicbir dis
+  servise baglanmaz, tum veri Shopify'in kendi nesnelerinden gelir.
 {%- endcomment -%}
 
 {%- liquid
@@ -19,6 +20,7 @@
 
   {%- if fiyat >= block.settings.alt_limit -%}
     {%- assign plan_satirlari = block.settings.taksit_plani | split: ',' -%}
+    {%- assign oran_satirlari = block.settings.taksit_oranlari | split: ',' -%}
 
     <div
       class="cf-taksit"
@@ -26,6 +28,7 @@
       data-urun="{{ product.handle }}"
       data-fiyat="{{ fiyat }}"
       data-plan="{{ block.settings.taksit_plani | escape }}"
+      data-oranlar="{{ block.settings.taksit_oranlari | escape }}"
       data-alt-limit="{{ block.settings.alt_limit }}"
       data-min-taksit-tutari="{{ block.settings.min_taksit_tutari }}"
       data-para-formati="{{ shop.money_format | escape }}"
@@ -54,11 +57,15 @@
         <tbody data-sk-taksit-govde>
           {% for vade in plan_satirlari %}
             {%- assign vade_sayi = vade | strip | plus: 0 -%}
+            {%- assign oran = oran_satirlari[forloop.index0] | strip | plus: 0 -%}
+            {%- assign toplam_hedef = fiyat | plus: fiyat | times: oran | divided_by: 100 -%}
             {%- if vade_sayi > 0 -%}
+              {%- assign aylik = toplam_hedef | divided_by: vade_sayi | ceil -%}
+              {%- assign toplam = aylik | times: vade_sayi -%}
               <tr>
-                <td>{{ vade_sayi }} {{ block.settings.taksit_kelimesi }}</td>
-                <td><strong>{{ fiyat | divided_by: vade_sayi | money }}</strong></td>
-                <td>{{ fiyat | money }}</td>
+                <td>{{ vade_sayi }} {{ block.settings.taksit_kelimesi }}{% if oran <= 0 and block.settings.vade_farksiz_etiketi != blank %} <span class="cf-taksit__vade-etiket">{{ block.settings.vade_farksiz_etiketi }}</span>{% endif %}</td>
+                <td><strong>{{ aylik | money }}</strong></td>
+                <td>{{ toplam | money }}</td>
               </tr>
             {%- endif -%}
           {% endfor %}
@@ -87,7 +94,14 @@
       "id": "taksit_plani",
       "label": "Taksit planı (vade sayıları, virgülle)",
       "default": "3,6,9,12",
-      "info": "Örnek: 3,6,9,12"
+      "info": "Örnek: 3,6,9,12. Aşağıdaki oran alanıyla aynı sırada eşleşir."
+    },
+    {
+      "type": "text",
+      "id": "taksit_oranlari",
+      "label": "Vade başına ek oran (%, virgülle)",
+      "default": "0,0,0,0",
+      "info": "Taksit planıyla aynı sırada. Örnek plan 3,6,9,12 için burada 0,0,3,5 yazarsanız 9 taksitte %3, 12 taksitte %5 ek ücret hesaplanır. 0 yazılan vadeler \"vade farksız\" etiketini alır."
     },
     {
       "type": "number",
@@ -114,7 +128,7 @@
       "id": "vade_farksiz_etiketi",
       "label": "Vade farksız etiketi",
       "default": "Vade farksız",
-      "info": "Aylık tutar × vade = ürün fiyatı ise bu etiket gösterilir."
+      "info": "Ek oranı 0 olan (veya boş bırakılan) vadelerde gösterilir."
     },
     {
       "type": "text",
