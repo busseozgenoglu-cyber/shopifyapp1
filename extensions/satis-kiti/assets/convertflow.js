@@ -1,4 +1,4 @@
-/* Satis Kiti — tema motoru. Blok basina JS 10 KB sinirli. */
+/* Satis Kiti. Blok basina JS 10 KB sinirli. */
 
 (function () {
   'use strict';
@@ -53,15 +53,14 @@
     setTimeout(function () { kap.remove(); }, 4500);
   }
 
-  // Dawn ve turevleri DOM'a "cart:updated" gibi bir olay yayinlamaz;
-  // sepeti degistiren fetch cagrilarini yakalayip kendi olayimizi basiyoruz.
+  // Dawn temalari DOM olayi yayinlamaz; cart fetch'lerini yakalayip olay basiyoruz.
   const SEPET_OLAYI = 'sk:sepet-degisti';
   function sepetYamasiKur() {
     if (window.__skSepetYamali || !window.fetch) return;
     window.__skSepetYamali = true;
     const orj = window.fetch;
     window.fetch = function (girdi) {
-      const yol = typeof girdi === 'string' ? girdi : (girdi && girdi.url) || '';
+      const yol = (girdi && girdi.url) || girdi || '';
       const sonuc = orj.apply(this, arguments);
       if (/\/cart\/(add|change|update|clear)/.test(yol)) {
         sonuc.then(function () { document.dispatchEvent(new Event(SEPET_OLAYI)); }).catch(function () {});
@@ -108,6 +107,7 @@
       const mesajEl = bar.querySelector('[data-sk-kargo-mesaj]');
       const dolguEl = bar.querySelector('[data-sk-kargo-dolgu]');
       const rayEl = bar.querySelector('[data-sk-kargo-ray]');
+      const yuzdeEl = bar.querySelector('[data-sk-kargo-yuzde]');
       if (!esik || !mesajEl || !dolguEl) return;
 
       function guncelle() {
@@ -132,10 +132,12 @@
               }
             }
 
+            const yuzdeMetin = yuzde + '% tamamlandı';
             dolguEl.style.width = yuzde + '%';
+            if (yuzdeEl) yuzdeEl.textContent = yuzdeMetin;
             if (rayEl) {
               rayEl.setAttribute('aria-valuenow', yuzde);
-              rayEl.setAttribute('aria-valuetext', yuzde + '% tamamlandı');
+              rayEl.setAttribute('aria-valuetext', yuzdeMetin);
             }
           })
           .catch(function () {});
@@ -143,9 +145,7 @@
 
       guncelle();
       const gecikmeli = debounce(guncelle, 300);
-      [SEPET_OLAYI, 'cart:updated', 'cart:refresh'].forEach(function (ad) {
-        document.addEventListener(ad, gecikmeli);
-      });
+      document.addEventListener(SEPET_OLAYI, gecikmeli);
     });
   }
 
