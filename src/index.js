@@ -20,6 +20,11 @@ const APP_VERSION = "1.2.0";
 
 const app = express();
 app.set("trust proxy", 1);
+// Express, JSON yanitlari icin ETag uretiyor; tarayici sonraki isteklerde
+// If-None-Match gonderip 304 aliyordu. Panel yanit govdesini bekledigi icin
+// bos govdeli 304 hata olarak okunuyor ve arayuz hic acilmiyordu. API
+// yanitlari zaten magazaya ozel ve kisa omurlu, onbelleklenmemeli.
+app.set("etag", false);
 app.use(compression());
 
 /* ---------- Request Logging ---------- */
@@ -59,6 +64,10 @@ app.post(shopify.config.webhooks.path, shopify.processWebhooks({ webhookHandlers
 // etkilemiyor.
 app.use("/api", shopify.validateAuthenticatedSession());
 app.use("/api", belirtecAraKatmani());
+app.use("/api", (_req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
 app.use(express.json({ limit: "256kb" }));
 
 app.get("/api/magaza", async (_req, res) => {

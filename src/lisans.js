@@ -23,7 +23,7 @@ export async function lisansYaz(session, aktifMi) {
     const shopRes = await client.request(SHOP_ID);
     const ownerId = shopRes?.data?.shop?.id;
     if (!ownerId) {
-      console.warn("[ConvertFlow TR] Shop ID alinamadi.");
+      console.warn("[Satış Kiti] Shop ID alinamadi.");
       return false;
     }
 
@@ -43,12 +43,12 @@ export async function lisansYaz(session, aktifMi) {
 
     const hatalar = res?.data?.metafieldsSet?.userErrors || [];
     if (hatalar.length) {
-      console.warn("[ConvertFlow TR] Lisans metafield hatasi:", hatalar.map((e) => e.message).join(", "));
+      console.warn("[Satış Kiti] Lisans metafield hatasi:", hatalar.map((e) => e.message).join(", "));
       return false;
     }
     return true;
   } catch (err) {
-    console.warn("[ConvertFlow TR] Lisans yazilamadi:", err.message);
+    console.warn("[Satış Kiti] Lisans yazilamadi:", err.message);
     return false;
   }
 }

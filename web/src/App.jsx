@@ -22,10 +22,24 @@ import {
 async function istek(yol, secenekler = {}) {
   const yanit = await fetch(yol, {
     headers: { "Content-Type": "application/json" },
+    cache: "no-store",
     ...secenekler,
   });
+
   const metin = await yanit.text();
-  const veri = metin ? JSON.parse(metin) : null;
+
+  // Oturum düştüğünde sunucu, App Bridge'in yeniden yetkilendirmesi için JSON
+  // yerine HTML döndürür. JSON.parse burada ham bir sözdizimi hatası fırlatıp
+  // paneli komple çökertiyordu; anlaşılır bir hataya çeviriyoruz.
+  let veri = null;
+  if (metin) {
+    try {
+      veri = JSON.parse(metin);
+    } catch {
+      throw new Error("Oturum doğrulanamadı. Sayfayı yenileyin.");
+    }
+  }
+
   if (!yanit.ok) throw new Error(veri?.error || "İstek başarısız oldu.");
   return veri;
 }
@@ -157,8 +171,10 @@ export default function App() {
   const [aktifSekme, setAktifSekme] = useState(0);
   const [kurulumAdimlari, setKurulumAdimlari] = useState(ADIMLAR);
   const [confetti, setConfetti] = useState(false);
+  const [hata, setHata] = useState(null);
 
   const yukle = useCallback(async () => {
+    setHata(null);
     try {
       const [m, a] = await Promise.all([istek("/api/magaza"), istek("/api/abonelik")]);
       setMagaza(m);
@@ -171,6 +187,9 @@ export default function App() {
         setConfetti(true);
       }
     } catch (err) {
+      // Veri gelmediyse ana ekran boş alanlara dokunup çökebiliyor; bu durumu
+      // ayrı bir ekranda gösterip yeniden denemeye izin veriyoruz.
+      setHata(err.message);
       setToast({ mesaj: err.message, hata: true });
     } finally {
       setYukleniyor(false);
@@ -214,15 +233,43 @@ export default function App() {
     return (
       <Frame>
         <Page>
-          <InlineStack align="center" blockAlign="center" gap="400" direction="column">
+          <BlockStack align="center" inlineAlign="center" gap="400">
             <Spinner accessibilityLabel="Yükleniyor" size="large" />
             <Text as="p" variant="bodyLg" tone="subdued">
-              ConvertFlow TR hazırlanıyor...
+              Satış Kiti hazırlanıyor...
             </Text>
             <Text as="p" variant="bodySm" tone="subdued">
               Satış artırıcı bloklar yükleniyor
             </Text>
-          </InlineStack>
+          </BlockStack>
+        </Page>
+      </Frame>
+    );
+  }
+
+  if (hata || !magaza) {
+    return (
+      <Frame>
+        <Page title="Satış Kiti">
+          <Card>
+            <BlockStack gap="300">
+              <Text as="h2" variant="headingMd">
+                Mağaza bilgileri alınamadı
+              </Text>
+              <Text as="p" tone="subdued">
+                {hata || "Beklenmeyen bir durum oluştu."} Sayfayı yenilemek çoğu
+                durumda yeterli oluyor.
+              </Text>
+              <InlineStack gap="200">
+                <Button variant="primary" onClick={yukle}>
+                  Yeniden dene
+                </Button>
+                <Button onClick={() => window.location.reload()}>
+                  Sayfayı yenile
+                </Button>
+              </InlineStack>
+            </BlockStack>
+          </Card>
         </Page>
       </Frame>
     );
@@ -232,7 +279,7 @@ export default function App() {
     <Frame>
       <Confetti active={confetti} />
       <Page
-        title="ConvertFlow TR"
+        title="Satış Kiti"
         subtitle="Türk e-ticaret mağazaları için dönüşüm odaklı satış artırıcı bloklar"
         primaryAction={{
           content: "Tema Düzenleyiciyi Aç",
@@ -243,7 +290,13 @@ export default function App() {
           {
             content: "Yardım",
             icon: ICONS.help,
-            onAction: () => window.open("https://convertflow-tr.com/yardim", "_blank"),
+            // Var olmayan bir yardım sitesine link vermek yerine doğrudan
+            // destek adresine yazdırıyoruz; inceleme ölü bağlantıları reddediyor.
+            onAction: () =>
+              window.open(
+                "mailto:busseozgenoglu@gmail.com?subject=Satış%20Kiti%20destek",
+                "_blank"
+              ),
           },
         ]}
       >
@@ -309,7 +362,7 @@ export default function App() {
                       <List type="number">
                         <List.Item><b>Tema düzenleyiciyi aç</b> — yukarıdaki düğmeye tıkla.</List.Item>
                         <List.Item>Sol üstten düzenlemek istediğin sayfayı seç — taksit ve indirim için <b>Ürün sayfaları</b>, kargo için <b>Sepet</b>.</List.Item>
-                        <List.Item>İlgili bölümde <b>Blok ekle</b> → <b>Uygulamalar</b> sekmesi → <b>ConvertFlow TR</b> altından bloğu seç.</List.Item>
+                        <List.Item>İlgili bölümde <b>Blok ekle</b> → <b>Uygulamalar</b> sekmesi → <b>Satış Kiti</b> altından bloğu seç.</List.Item>
                         <List.Item>Sağdaki panelden ayarları düzenle (renk, mesaj, tarih), <b>Kaydet</b>'e bas.</List.Item>
                       </List>
                     </BlockStack>
@@ -343,7 +396,7 @@ export default function App() {
                     </BlockStack>
                   </Card>
                   <Banner tone="success" title="💡 Neden bu 5 blok?">
-                    <p>Türkiye'de Shopify mağazaları en çok bu 5 noktada dönüşüm kaybediyor: fiyat algısı, kargo şeffaflığı, güven eksikliği, erteleme alışkanlığı ve indirim fırsatlarını kaçırma. ConvertFlow TR hepsini tek uygulamada çözer.</p>
+                    <p>Türkiye'de Shopify mağazaları en çok bu 5 noktada dönüşüm kaybediyor: fiyat algısı, kargo şeffaflığı, güven eksikliği, erteleme alışkanlığı ve indirim fırsatlarını kaçırma. Satış Kiti hepsini tek uygulamada çözer.</p>
                   </Banner>
                 </>
               )}
@@ -394,7 +447,7 @@ export default function App() {
           <Divider />
           <InlineStack align="center" gap="200">
             <Text as="p" variant="bodySm" tone="subdued">
-              ConvertFlow TR v1.1.0 — 🚀 Türk e-ticaretinin dönüşüm motoru
+              Satış Kiti v1.2.0 — 🚀 Türk e-ticaretinin dönüşüm motoru
             </Text>
           </InlineStack>
         </BlockStack>

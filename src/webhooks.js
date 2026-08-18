@@ -12,7 +12,7 @@ const webhookHandlers = {
     deliveryMethod: DeliveryMethod.Http,
     callbackUrl: YOL,
     callback: async (_topic, shop) => {
-      console.log(`[ConvertFlow TR] Uygulama kaldirildi: ${shop}`);
+      console.log(`[Satış Kiti] Uygulama kaldirildi: ${shop}`);
     },
   },
 
@@ -20,7 +20,7 @@ const webhookHandlers = {
     deliveryMethod: DeliveryMethod.Http,
     callbackUrl: YOL,
     callback: async (_topic, shop) => {
-      console.log(`[ConvertFlow TR] Veri talebi (${shop}) — saklanan musteri verisi yok.`);
+      console.log(`[Satış Kiti] Veri talebi (${shop}) — saklanan musteri verisi yok.`);
     },
   },
 
@@ -28,7 +28,7 @@ const webhookHandlers = {
     deliveryMethod: DeliveryMethod.Http,
     callbackUrl: YOL,
     callback: async (_topic, shop) => {
-      console.log(`[ConvertFlow TR] Musteri silme talebi (${shop}) — saklanan veri yok.`);
+      console.log(`[Satış Kiti] Musteri silme talebi (${shop}) — saklanan veri yok.`);
     },
   },
 
@@ -36,7 +36,7 @@ const webhookHandlers = {
     deliveryMethod: DeliveryMethod.Http,
     callbackUrl: YOL,
     callback: async (_topic, shop) => {
-      console.log(`[ConvertFlow TR] Magaza silme talebi (${shop}) — saklanan veri yok.`);
+      console.log(`[Satış Kiti] Magaza silme talebi (${shop}) — saklanan veri yok.`);
     },
   },
 };
