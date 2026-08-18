@@ -1,6 +1,4 @@
-/* Satis Kiti — tema bloklari motoru.
-   Shopify tema uzantilarinda blok basina JS 10 KB ile sinirli: bu dosya o
-   esigin altinda kalmali, yoksa deploy performans hatasi veriyor. */
+/* Satis Kiti — tema motoru. Blok basina JS 10 KB sinirli. */
 
 (function () {
   'use strict';
@@ -18,7 +16,6 @@
     return format.replace(/\{\{\s*amount\s*\}\}/g, (tutar / 100).toFixed(2).replace('.', ','));
   }
 
-  // Bloklar gorunur alana girdiginde giris animasyonu tetiklenir.
   function baslatGozlemci() {
     if (!window.IntersectionObserver) return;
     const gozlemci = new IntersectionObserver(function (girisler) {
@@ -33,7 +30,6 @@
       .forEach(function (el) { gozlemci.observe(el); });
   }
 
-  // Parca sayisi bilerek dusuk: her parca mobilde ayri bir DOM dugumu.
   function confettiPatlat(x, y, renkler) {
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     renkler = renkler || ['#4F46E5', '#EC4899', '#10B981', '#F59E0B', '#DC2626', '#06B6D4'];
@@ -57,7 +53,23 @@
     setTimeout(function () { kap.remove(); }, 4500);
   }
 
-  /* ---------- Taksit tablosu ---------- */
+  // Dawn ve turevleri DOM'a "cart:updated" gibi bir olay yayinlamaz;
+  // sepeti degistiren fetch cagrilarini yakalayip kendi olayimizi basiyoruz.
+  const SEPET_OLAYI = 'sk:sepet-degisti';
+  function sepetYamasiKur() {
+    if (window.__skSepetYamali || !window.fetch) return;
+    window.__skSepetYamali = true;
+    const orj = window.fetch;
+    window.fetch = function (girdi) {
+      const yol = typeof girdi === 'string' ? girdi : (girdi && girdi.url) || '';
+      const sonuc = orj.apply(this, arguments);
+      if (/\/cart\/(add|change|update|clear)/.test(yol)) {
+        sonuc.then(function () { document.dispatchEvent(new Event(SEPET_OLAYI)); }).catch(function () {});
+      }
+      return sonuc;
+    };
+  }
+
   function baslatTaksit() {
     document.querySelectorAll('[data-sk-taksit]').forEach(function (tablo) {
       const plan = tablo.dataset.plan;
@@ -87,7 +99,6 @@
     });
   }
 
-  /* ---------- Ucretsiz kargo ilerleme cubugu ---------- */
   function baslatKargo() {
     document.querySelectorAll('[data-sk-kargo]').forEach(function (bar) {
       const esik = parseInt(bar.dataset.esik, 10);
@@ -109,6 +120,7 @@
 
             if (kalan > 0) {
               mesajEl.textContent = mesajDevam.replace('[tutar]', formatPara(kalan, paraFormati));
+              mesajEl.classList.remove('cf-kargo__tamam'); delete bar.dataset.kutlandi;
             } else {
               mesajEl.textContent = mesajTamam;
               mesajEl.classList.add('cf-kargo__tamam');
@@ -131,12 +143,12 @@
 
       guncelle();
       const gecikmeli = debounce(guncelle, 300);
-      document.addEventListener('cart:updated', gecikmeli);
-      document.addEventListener('cart:refresh', gecikmeli);
+      [SEPET_OLAYI, 'cart:updated', 'cart:refresh'].forEach(function (ad) {
+        document.addEventListener(ad, gecikmeli);
+      });
     });
   }
 
-  /* ---------- Kargo kesim saati ---------- */
   function baslatKargoSuresi() {
     document.querySelectorAll('[data-sk-aciliyet]').forEach(function (sayac) {
       const kesimSaati = sayac.dataset.kesimSaati;
@@ -172,7 +184,6 @@
     });
   }
 
-  /* ---------- Indirim geri sayimi ---------- */
   function baslatIndirimSayaclari() {
     document.querySelectorAll('[data-cf-indirim]').forEach(function (sayac) {
       const bitisStr = sayac.dataset.bitis;
@@ -189,9 +200,6 @@
       const elMesaj = sayac.querySelector('[data-cf-indirim-mesaj]');
       if (!elGun || !elSaat || !elDakika || !elSaniye) return;
 
-      // Rakam her saniye yeniden yazilirsa animasyon tetiklenmez, sayac olu
-      // gorunur. Yalnizca deger degisince yaziyoruz; ozniteligi ayni karede
-      // kaldirip tekrar eklemek animasyonu bastan baslatir.
       function yaz(el, deger) {
         const metin = String(deger).padStart(2, '0');
         if (el.textContent === metin) return;
@@ -226,7 +234,6 @@
 
         if (elMesaj && mesajAktif) elMesaj.textContent = mesajAktif;
 
-        // Son bir saatte panel ve sayac aciliyet gorunumune geciyor.
         if (kalan < 3600000) {
           sayac.setAttribute('data-acil', '');
           const kart = sayac.closest('.cf-indirim');
@@ -240,6 +247,7 @@
   }
 
   function init() {
+    sepetYamasiKur();
     baslatTaksit();
     baslatKargo();
     baslatKargoSuresi();
