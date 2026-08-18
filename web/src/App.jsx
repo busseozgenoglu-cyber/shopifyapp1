@@ -226,10 +226,14 @@ export default function App() {
   // `icon` verildiğinde Polaris sekme metnini gizleyip yalnızca simgeyi
   // çiziyordu; sekmelerin hangisi olduğu anlaşılmıyordu. Metin tek başına
   // yeterli, simgeler zaten emoji olarak içerikte.
+  //
+  // `panelID` VERİLMEMELİ: Polaris o kimlikte bir panel elemanı arıyor, bu
+  // yapıda panel ayrı bir eleman olarak render edilmediği için arayüz komple
+  // boş kalıyordu.
   const sekmeler = [
-    { id: "kurulum", content: "🚀 Kurulum", panelID: "panel-kurulum" },
-    { id: "bloklar", content: "🎨 Bloklar", panelID: "panel-bloklar" },
-    { id: "paketler", content: "💎 Paketler", panelID: "panel-paketler" },
+    { id: "kurulum", content: "🚀 Kurulum" },
+    { id: "bloklar", content: "🎨 Bloklar" },
+    { id: "paketler", content: "💎 Paketler" },
   ];
 
   if (yukleniyor) {
